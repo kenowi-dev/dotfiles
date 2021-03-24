@@ -1,0 +1,4 @@
+# Set the window tile.
+# Especially usefull for WSL.
+window_title="\\033]0;${PWD##*/}\\007"
+echo -ne "$window_title"

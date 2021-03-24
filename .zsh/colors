@@ -1,0 +1,5 @@
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=245'
+test -r ~/.zsh/dir_colors && eval $(dircolors ~/.zsh/dir_colors)
+
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS} 
+ls --color -d . &>/dev/null && alias ls='ls --color=tty' || { ls -G . &>/dev/null && alias ls='ls -G' }

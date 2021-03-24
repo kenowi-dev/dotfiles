@@ -1,0 +1,5 @@
+bindkey  "^[[H"   beginning-of-line
+bindkey  "^[[F"   end-of-line
+bindkey  "^[[3~"  delete-char
+bindkey  "^[[5~"  beginning-of-history
+bindkey  "^[[6~"  end-of-history
