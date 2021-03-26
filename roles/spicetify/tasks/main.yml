@@ -16,7 +16,7 @@
   stat:
     path: "{{ home_path }}/.var/app/com.spotify.Client/config/spotify/prefs"
   register: pref_location
-  when: NOT pref_location.stat.exists
+  when: not (pref_location.stat.exists)
 
 
 
@@ -58,6 +58,6 @@
     - name: apply config
       shell: "{{ home_path }}/spicetify-cli/spicetify backup apply enable-devtool"
 
-  when: pref_lcoation.stat.exists AND spotify_location.stat.exists
+  when: pref_location.stat.exists and spotify_location.stat.exists
 
 
