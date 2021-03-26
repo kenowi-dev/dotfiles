@@ -5,7 +5,7 @@ general_packages:
   - wget
   - ansible
 
-redhat_packages: 
+redhat_packages: []
 
 debian_packages:
   - build-essential
