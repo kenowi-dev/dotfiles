@@ -32,7 +32,7 @@ Not all roles are implemented yet. And more roles may be added in the future.
 - [x] java
 - [x] packages
 - [x] python
-- [ ] snaps
+- [x] snaps
 - [x] spotify
 - [x] spicetify
 - [ ] uni
