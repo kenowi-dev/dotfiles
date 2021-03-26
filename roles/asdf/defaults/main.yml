@@ -1,5 +1,0 @@
-asdf_apt_global_dependencies: ["unzip", "git", "curl", "autoconf", "automake", "gcc",
-  "g++", "make", "patch", "pkg-config", "binutils", "libtool", "bison", "libreadline-dev"]
-  
-asdf_yum_global_dependencies: ["unzip", "git", "curl", "autoconf", "automake", "gcc",
-  "gcc-c++", "make", "patch", "pkgconfig", "binutils", "libtool", "bison", "readline-devel"]

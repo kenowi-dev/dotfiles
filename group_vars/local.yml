@@ -3,19 +3,5 @@ git_name: false
 
 home_path: "{{ ansible_env.HOME }}"
 
-erlang_versions:
-  - 22.1.4
-
-elixir_versions:
-  - 1.11.4
-
-python2_versions: 
-  - 2.7.18
-python3_versions: 
-  - 3.9.0
-
-java_versions:
-  - "openjdk-14.0.1"
-
 
 package_upgrade: yes

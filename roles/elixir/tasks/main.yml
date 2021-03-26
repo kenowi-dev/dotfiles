@@ -1,24 +1,22 @@
-- name: "install elixir dependencies with apt"
-  apt:
-    name: "{{ asdf_apt_elixir_dependencies }}"
-    install_recommends: no
-  become: True
+- name: "install elixir debian"
+  block:
+    - name: add repository
+      shell: "wget https://packages.erlang-solutions.com/erlang-solutions_2.0_all.deb && sudo dpkg -i erlang-solutions_2.0_all.deb"
+
+    - name: install elixir
+      apt:
+        name: 
+          - esl-erlang
+          - elixir
+        state: present
+      become: True
   when: ansible_os_family == "Debian"
+
+
 
 - name: "install elixir dependencies with yum"
   yum:
-    name: "{{ asdf_yum_elixir_dependencies }}"
+    name: elixir
+    state: present
   become: True
   when: ansible_os_family == "RedHat"
-
-- name: Add elixir plugin
-  command: "asdf plugin-add elixir"
-  register: elixir_add
-  failed_when: elixir_add == 2
-
-- name: "Install elixir versions"
-  command: asdf install elixir {{ item }}
-  loop: "{{ elixir_versions }}"
-
-- name: Set global version for elixir to {{ versions[0] }}
-  command: "asdf global elixir {{ elixir_versions[0] }}"

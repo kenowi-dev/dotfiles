@@ -1,3 +1,0 @@
-asdf_apt_java_dependencies: ["unzip", "curl", "jq", "coreutils"]
-
-asdf_yum_java_dependencies: ["unzip", "curl", "jq", "coreutils"]

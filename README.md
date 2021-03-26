@@ -20,7 +20,6 @@ The tags available have the same name as their roles.
 
 Not all roles are implemented yet. And more roles may be added in the future.
 
-- [x] asdf
 - [x] vscode
 - [x] dotflies_vscode
 - [x] zsh

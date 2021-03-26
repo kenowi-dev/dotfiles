@@ -1,24 +1,22 @@
-- name: "install erlang dependencies with apt"
-  apt:
-    name: "{{ asdf_apt_erlang_dependencies }}"
-    install_recommends: no
-  become: True
+- name: "install erlang debian"
+  block:
+    - name: add repository
+      shell: "wget https://packages.erlang-solutions.com/erlang-solutions_2.0_all.deb && sudo dpkg -i erlang-solutions_2.0_all.deb"
+
+    - name: install erlang
+      apt:
+        name: 
+          - erlang-base 
+          - erlang-doc
+          - erlang-manpages
+        state: present
+      become: True
   when: ansible_os_family == "Debian"
+
 
 - name: "install erlang dependencies with yum"
   yum:
-    name: "{{ asdf_yum_erlang_dependencies }}"
+    name: erlang
+    state: present
   become: True
   when: ansible_os_family == "RedHat"
-
-- name: Add erlang plugin
-  command: "asdf plugin-add erlang"
-  register: erlang_add
-  failed_when: erlang_add == 2
-
-- name: "Install erlang versions"
-  command: asdf install erlang {{ item }}
-  loop: "{{ erlang_versions }}"
-
-- name: Set global version for erlang to {{ versions[0] }}
-  command: "asdf global erlang {{ erlang_versions[0] }}"

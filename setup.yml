@@ -37,10 +37,6 @@
       tags:
         - spicetify
     
-    - role: asdf
-      tags:
-        - asdf
-
     - role: elixir
       tags: 
         - elixir
