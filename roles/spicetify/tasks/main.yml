@@ -1,15 +1,64 @@
-- name: Install spicetify dependencies
-  package:
-    name: "{{ spicetify_dependencies }}"
-    status: present
-  become: True
-  become_user: root
-  become_method: sudo
-
-- name: Install spicetify
-  shell: "curl -fsSL https://raw.githubusercontent.com/khanhas/spicetify-cli/master/install.sh | sh"
 
 - name: Check if spotify directory exists
     stat:
-      path: [path to the file or directory you want to check]
-    register: register_name
+      path: "{{ flatpak_installations.stdout }}/app/com.spotify.Client/x86_64/stable/active/files/extra/share/spotify"
+    register: spotify_location
+
+- name: check ~/.config/spotify/prefs
+  stat:
+    path: "{{ home_path }}/.config/spotify/prefs"
+  register: pref_location
+
+- name: check ~/.var/app/com.spotify.Client/config/spotify/prefs
+  stat:
+    path: "{{ home_path }}/.var/app/com.spotify.Client/config/spotify/prefs"
+  register: pref_location
+  when: NOT pref_location.stat.exists
+
+
+
+- name: Install and setup Spicetify
+  block: 
+    - name: Install spicetify dependencies
+      package:
+        name: "{{ spicetify_dependencies }}"
+        status: present
+      become: True
+      become_user: root
+      become_method: sudo
+
+    - name: Install spicetify
+      shell: "curl -fsSL https://raw.githubusercontent.com/khanhas/spicetify-cli/master/install.sh | sh"
+
+    - name: register flatpak installations path
+      shell: "flatpak --installations"
+      register: flatpak_installations
+
+    - name: Give write permissions on spotify
+      file: 
+        path: "{{ spotify_location.path }}"
+        mode: a+wr
+      
+    - name: Give write permissions on spotify apps
+      file: 
+        path: "{{ spotify_location.path }}/Apps"
+        mode: a+wr
+        recurse: yes
+
+    - name: Clone Spicetify Themes
+      git: 
+        repo: https://github.com/morpheusthewhite/spicetify-themes
+        dest: "{{ home_path }}/.config/spicetify/Themes"
+        depth: 1
+
+    - name: set config files
+      template:
+        src: config.ini.j2
+        dest: "{{ home_path }}/.config/spicetify/config.ini"
+
+    - name: apply config
+      shell: "{{ home_path }}/spicetify-cli/spicetify backup apply enable-devtool"
+
+  when: pref_lcoation.stat.exists AND spotify_location.stat.exists
+
+

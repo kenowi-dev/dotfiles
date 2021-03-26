@@ -23,8 +23,8 @@ Not all roles are implemented yet. And more roles may be added in the future.
 - [x] asdf
 - [x] vscode
 - [x] dotflies_vscode
-- [ ] zsh
-- [ ] dotfiles_zsh
+- [x] zsh
+- [x] dotfiles_zsh
 - [x] elixir
 - [x] erlang
 - [ ] gaming
@@ -33,6 +33,6 @@ Not all roles are implemented yet. And more roles may be added in the future.
 - [x] packages
 - [x] python
 - [ ] snaps
-- [ ] spotify
-- [ ] spicetify
+- [x] spotify
+- [x] spicetify
 - [ ] uni

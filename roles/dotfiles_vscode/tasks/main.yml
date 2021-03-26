@@ -6,7 +6,7 @@
   command: "mv {{ home_path }}/.config/Code/User/settings.json {{ home_path }}/.config/Code/User/settings.json.bak"
   args:
     creates: "{{ home_path }}/.config/Code/User/settings.json.bak"
-  when: settings_stat.exists
+  when: settings_stat.stat.exists
 
 - name: Check if vscode_custom_styles.css exists
   stat: path="{{ home_path }}/.config/Code/User/vscode_custom_styles.css"
@@ -16,7 +16,7 @@
   command: "mv {{ home_path }}/.config/Code/vscode_custom_styles.css {{ home_path }}/.config/Code/vscode_custom_styles.css.bak"
   args:
     creates: "{{ home_path }}/.config/Code/vscode_custom_styles.css"
-  when: css_stat.exists
+  when: css_stat.stat.exists
 
 - name: Set new settings.json
   get_url:

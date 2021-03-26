@@ -1,0 +1,82 @@
+- name: Install dependencies
+  package:
+    name: curl
+    state: present
+
+- name: Install Antibody
+  shell: "curl -sfL git.io/antibody | sh -s - -b {{ home_path }}/.local/bin"
+
+- name: Check if dotfiles already exists
+  stat: path="{{ home_path }}/.dotfiles"
+  register: dotfiles_stat
+
+- name: Back up dotfiles
+  command: "mv {{ home_path }}/.dotfiles {{ home_path }}/.dotfiles.bak"
+  args:
+    creates: "{{ home_path }}/.dotfiles.bak"
+  when: dotfiles_stat.stat.exists
+
+- name: Clone Dotfiles to Documents
+  git: 
+    repo: https://github.com/systeno/dotfiles.git
+    dest: "{{ home_path }}/.dotfiles"
+
+- name: check if .zshrc exists
+  stat: path="{{ home_path }}/.zshrc"
+  register: zshrc_stat
+
+- name: Back up zshrc
+  command: "mv {{ home_path }}/.zshrc {{ home_path }}/.zshrc.bak"
+  args:
+    creates: "{{ home_path }}/.zshrc.bak"
+  when: zshrc_stat.stat.exists
+
+- name: check if .zshenv exists
+  stat: path="{{ home_path }}/.zshenv"
+  register: zshenv_stat
+
+- name: Back up zshenv
+  command: "mv {{ home_path }}/.zshenv {{ home_path }}/.zshenv.bak"
+  args:
+    creates: "{{ home_path }}/.zshenv.bak"
+  when: zshenv_stat.stat.exists
+
+- name: check if .zprofile exists
+  stat: path="{{ home_path }}/.zprofile"
+  register: zprofile_stat
+
+- name: Back up zprofile
+  command: "mv {{ home_path }}/.zprofile {{ home_path }}/.zprofile.bak"
+  args:
+    creates: "{{ home_path }}/.zprofile.bak"
+  when: zprofile_stat.stat.exists
+
+- name: check if .zsh exists
+  stat: path="{{ home_path }}/.zsh"
+  register: zsh_stat
+
+- name: Back up zsh
+  command: "mv {{ home_path }}/.zsh {{ home_path }}/.zsh.bak"
+  args:
+    creates: "{{ home_path }}/.zsh.bak"
+  when: zsh_stat.stat.exists
+
+- name: Copy .zshrc
+  copy:
+    src: "{{ home_path }}/.dotfiles/.zshrc"
+    dest: "{{ home_path }}/.zshrc"
+
+- name: Copy .zshenv
+  copy:
+    src: "{{ home_path }}/.dotfiles/.zshenv"
+    dest: "{{ home_path }}/.zshenv"
+
+- name: Copy .zprofile
+  copy:
+    src: "{{ home_path }}/.dotfiles/.zprofile"
+    dest: "{{ home_path }}/.zprofile"
+
+- name: Copy .zsh
+  copy:
+    src: "{{ home_path }}/.dotfiles/.zsh"
+    dest: "{{ home_path }}/.zsh"

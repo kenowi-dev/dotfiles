@@ -1,0 +1,29 @@
+- name: Install zsh
+  package: 
+    name: zsh 
+    state: present
+  become: yes
+  become_user: root
+  become_method: sudo
+
+- name: Finding ZSH
+  shell: command -v zsh
+  changed_when: false
+  register: result
+
+- name: Add ZSH to /etc/shells
+  become: true
+  lineinfile:
+    line: "{{result.stdout}}"
+    dest: /etc/shells
+    state: present
+  when:
+    - result.rc == 0
+
+- name: Set the default shell to ZSH
+  become: true
+  user:
+    name: "{{ ansible_user_id }}"
+    shell: "{{ result.stdout }}"
+  when:
+    - result.rc == 0
