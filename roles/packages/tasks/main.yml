@@ -44,6 +44,7 @@
   package:
     name: "{{ item }}"
     state: present
+    update_cache: yes
   become: yes
   become_user: root
   become_method: sudo

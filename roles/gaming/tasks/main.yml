@@ -1,0 +1,32 @@
+- name: install snapd
+  package: 
+    name: snapd
+    state: present
+  become: yes
+  become_user: root
+  become_method: sudo
+
+- name: create synlink on redhat
+  shell: "ln -s /var/lib/snapd/snap /snap"
+  become: yes
+  become_user: root
+  become_method: sudo
+  when: ansible_os_family == "RedHat"
+
+- name: Install Discord
+  snap:
+    name: discord
+    classic: yes
+  become: True
+
+- name: add repo for Debian
+  shell: "add-apt-repository multiverse"
+  become: True
+  when: ansible_os_family == "Debian"
+
+- name: Install Steam
+  pacakge:
+    name: steam
+    state: present
+    update_cache: yes
+  become: True

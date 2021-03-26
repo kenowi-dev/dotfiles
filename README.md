@@ -104,12 +104,10 @@ This task installs [erlang](https://www.erlang.org/).
 
 ## gaming
 --------------
-This task is not yet implemeted.
-
 The idea is to create a task which will install all necessary tools needed to play games.
 This may include programms like:
-- [ ] Steam
-- [ ] Discord
+- [x] Steam
+- [x] Discord
 - [ ] Teamspeak
 
 ## git
