@@ -33,7 +33,7 @@
       - python2
       - python-pip
       - python3-pip
-      state: present
-      update_cache: yes
+    state: present
+    update_cache: yes
   become: True
   when: ansible_os_family == "RedHat"
