@@ -7,6 +7,9 @@
   become_method: sudo
 
 - name: Install the spotify flatpak
-  community.general.flatpak:
-    name:  https://s3.amazonaws.com/alexlarsson/spotify-repo/spotify.flatpakref
+  flatpak:
+    name:  https://dl.flathub.org/repo/appstream/com.spotify.Client.flatpakref
     state: present
+  become: True
+  become_user: root
+  become_method: sudo
