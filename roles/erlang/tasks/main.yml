@@ -6,9 +6,7 @@
     - name: install erlang
       apt:
         name: 
-          - erlang-base 
-          - erlang-doc
-          - erlang-manpages
+          - esl-erlang
         state: present
         update_cache: yes
       become: True

@@ -6,7 +6,6 @@
     - name: install elixir
       apt:
         name: 
-          - esl-erlang
           - elixir
         state: present
         update_cache: yes
