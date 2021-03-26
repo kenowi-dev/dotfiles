@@ -1,5 +1,5 @@
-git_email: false
-git_name: false
+git_email: ""
+git_name: ""
 
 home_path: "{{ ansible_env.HOME }}"
 
