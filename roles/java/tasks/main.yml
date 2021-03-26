@@ -21,4 +21,4 @@
   loop: "{{ java_versions }}"
 
 - name: Set global versions for python
-  command: "asdf global java {{ java_versions[0] }}
+  command: "asdf global java {{ java_versions[0] }}"
