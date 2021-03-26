@@ -1,0 +1,8 @@
+[user]
+{% if git_email is not false %}
+	email = "{{ git_email }}"
+{% endif %}
+{% if git_name is not false %}
+	name = "{{ git_name }}"
+{% endif %}
+	

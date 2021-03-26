@@ -1,0 +1,46 @@
+- name: "Install Debian Packages"
+  block:
+    - name: Upgrade all debian packages to the latest version
+      apt:
+        name: "*"
+        state: latest
+      when: package_upgrade
+
+    - name: Install debian specific packages
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ debian_packages }}"
+  become: True
+  become_user: root
+  become_method: sudo
+  when: ansible_os_family == "Debian"
+
+- name: "Install RedHat Packages"
+  block:
+    - name: Upgrade all redhat packages to the latest version
+      yum:
+        name: '*'
+        state: latest
+      when: package_upgrade
+
+    - name: Install redhat specific packages
+      yum:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ redhat_packages }}"
+  become: True
+  become_user: root
+  become_method: sudo
+  when: ansible_os_family == "RedHat"
+
+
+
+- name: Install general packages
+  package:
+    name: "{{ item }}"
+    state: present
+  become: yes
+  become_user: root
+  become_method: sudo
+  loop: "{{ general_packages }}"

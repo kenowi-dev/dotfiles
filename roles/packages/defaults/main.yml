@@ -1,0 +1,11 @@
+general_packages:
+  - make
+  - curl
+  - jq
+  - wget
+  - ansible
+
+redhat_packages: 
+
+debian_packages:
+  - build-essential

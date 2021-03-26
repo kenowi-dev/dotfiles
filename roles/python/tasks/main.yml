@@ -1,0 +1,28 @@
+- name: "install python dependencies with apt"
+  apt:
+    name: "{{ asdf_apt_python_dependencies }}"
+    install_recommends: no
+  become: True
+  when: ansible_os_family == "Debian"
+
+- name: "install python dependencies with yum"
+  yum:
+    name: "{{ asdf_yum_python_dependencies }}"
+  become: True
+  when: ansible_os_family == "RedHat"
+
+- name: Add python plugin for asdf
+  command: asdf plugin-add python
+  register: python_add
+  failed_when: python_add == 1
+
+- name: "Install python2 versions"
+  command: "asdf install python  {{ item }}"
+  loop: "{{ python2_versions }}"
+
+- name: "Install python3 versions"
+  command: "asdf install python  {{ item }}"
+  loop: "{{ python3_versions }}"
+
+- name: Set global versions for python
+  command: "asdf global python {{ python3_versions[0] }} {{ python2_versions[0] }}"

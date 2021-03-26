@@ -1,0 +1,46 @@
+- name: Check if settings.json exists
+  stat: path="{{ home_path }}/.config/Code/User/settings.json"
+  register: settings_stat
+
+- name: Back up settings.json
+  command: "mv {{ home_path }}/.config/Code/User/settings.json {{ home_path }}/.config/Code/User/settings.json.bak"
+  args:
+    creates: "{{ home_path }}/.config/Code/User/settings.json.bak"
+  when: settings_stat.exists
+
+- name: Check if vscode_custom_styles.css exists
+  stat: path="{{ home_path }}/.config/Code/User/vscode_custom_styles.css"
+  register: css_stat
+
+- name: Back up vscode_custom_styles.css
+  command: "mv {{ home_path }}/.config/Code/vscode_custom_styles.css {{ home_path }}/.config/Code/vscode_custom_styles.css.bak"
+  args:
+    creates: "{{ home_path }}/.config/Code/vscode_custom_styles.css"
+  when: css_stat.exists
+
+- name: Set new settings.json
+  get_url:
+    url: "https://raw.githubusercontent.com/systeno/vscode-settings/main/settings.json"
+    dest: "{{ home_path }}/.config/Code/User/settings.json"
+
+- name: Set new custom css
+  get_url: 
+    url: "https://raw.githubusercontent.com/systeno/vscode-settings/main/vscode_custom_styles.css"
+    dest: "{{ home_path }}/.config/Code/vscode_custom_styles.css"
+
+- name: Install dependencies for extension installation
+  package:
+    name: "{{ vscode_settings_dependencies }}"
+    status: present
+  become: True
+  become_user: root
+  become_method: sudo
+
+- name: "install erlang dependencies with yum"
+  yum:
+    name: "{{ vscode_settings_dependencies }}"
+  become: True
+  when: ansible_os_family == "RedHat"
+
+- name: Install vscode extensions
+  shell: "curl https://raw.githubusercontent.com/systeno/vscode-settings/main/vs_code_extensions_list.txt | xargs -n1 code --install-extension"

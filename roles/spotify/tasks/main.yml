@@ -1,0 +1,12 @@
+- name: Install spotify dependencies
+  package:
+    name: "{{ spotify_dependencies }}"
+    status: present
+  become: True
+  become_user: root
+  become_method: sudo
+
+- name: Install the spotify flatpak
+  flatpak:
+    name:  https://s3.amazonaws.com/alexlarsson/spotify-repo/spotify.flatpakref
+    state: present

@@ -1,0 +1,67 @@
+- name: "System setup"
+  hosts: local
+  roles:
+    - role: git
+      tags: 
+        - git
+    
+    - role: snaps
+      tags: 
+        - snaps
+    
+    - role: packages
+      tags:
+        - packages
+
+    - role: zsh
+      tags: 
+        - zsh
+      
+    - role: dotfiles_zsh
+      tags:
+        - dotfiles_zsh
+      
+    - role: vscode
+      tags:
+        - vscode
+
+    - role: dotfiles_vscode
+      tags:
+        - dotfiles_vscode
+
+    - role: spotify
+      tags: 
+        - spotify
+    
+    - role: spicetify
+      tags:
+        - spicetify
+    
+    - role: asdf
+      tags:
+        - asdf
+
+    - role: elixir
+      tags: 
+        - elixir
+
+    - role: erlang
+      tags: 
+        - erlang
+    
+    - role: java
+      tags:
+        - java
+    
+    - role: python
+      tags: 
+        - python
+
+    - role: uni
+      tags: 
+        - uni
+    
+    - role: gaming
+      tags: 
+        - gaming
+

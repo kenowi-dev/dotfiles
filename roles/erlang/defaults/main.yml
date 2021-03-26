@@ -1,0 +1,3 @@
+asdf_apt_erlang_dependencies: ["fop", "gettext", "xsltproc", "libncurses5-dev", "libssl-dev", "libxslt-dev", "libyaml-dev", "zlib1g-dev"]
+
+asdf_yum_erlang_dependencies: ["fop", "gettext", "libxslt", "ncurses-devel", "openssl-devel", "libxslt-devel", "libyaml-devel", "zlib-devel"]

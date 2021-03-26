@@ -1,0 +1,24 @@
+- name: "install elixir dependencies with apt"
+  apt:
+    name: "{{ asdf_apt_elixir_dependencies }}"
+    install_recommends: no
+  become: True
+  when: ansible_os_family == "Debian"
+
+- name: "install elixir dependencies with yum"
+  yum:
+    name: "{{ asdf_yum_elixir_dependencies }}"
+  become: True
+  when: ansible_os_family == "RedHat"
+
+- name: Add elixir plugin
+  command: "asdf plugin-add elixir"
+  register: elixir_add
+  failed_when: elixir_add == 2
+
+- name: "Install elixir versions"
+  command: asdf install elixir {{ item }}
+  loop: "{{ elixir_versions }}"
+
+- name: Set global version for elixir to {{ versions[0] }}
+  command: "asdf global elixir {{ elixir_versions[0] }}"

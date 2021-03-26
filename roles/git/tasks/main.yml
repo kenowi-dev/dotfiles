@@ -1,0 +1,22 @@
+- name: Make sure git is installed
+  become: true
+  package:
+    name: git
+    state: present
+
+- name: Check if gitconfig exists
+  stat: path="{{ home_path }}/.gitconfig"
+  register: gitconfig_stat
+
+- name: Back up gitconfig
+  command: "mv {{ home_path }}/.gitconfig {{ home_path }}/.gitconfig.bak"
+  args:
+    creates: "{{ home_path }}/.gitconfig.bak"
+  when: gitconfig_stat.stat.exists
+
+- name: Generate gitconfig
+  become: true
+  template:
+    src: gitconfig.j2
+    dest: "{{ home_path }}/.gitconfig"
+  when: (git_name is not false) or (git_email is not false) 

@@ -1,0 +1,15 @@
+- name: Install spicetify dependencies
+  package:
+    name: "{{ spicetify_dependencies }}"
+    status: present
+  become: True
+  become_user: root
+  become_method: sudo
+
+- name: Install spicetify
+  shell: "curl -fsSL https://raw.githubusercontent.com/khanhas/spicetify-cli/master/install.sh | sh"
+
+- name: Check if spotify directory exists
+    stat:
+      path: [path to the file or directory you want to check]
+    register: register_name

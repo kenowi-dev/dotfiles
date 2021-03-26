@@ -1,0 +1,7 @@
+- name: Install vscode via snap
+  snap:
+    name: vscode
+    classic: yes
+  become: yes
+  become_user: root
+  become_method: sudo

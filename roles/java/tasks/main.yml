@@ -1,0 +1,24 @@
+- name: "install java dependencies with apt"
+  apt:
+    name: "{{ asdf_apt_java_dependencies }}"
+    install_recommends: no
+  become: True
+  when: ansible_os_family == "Debian"
+
+- name: "install java dependencies with yum"
+  yum:
+    name: "{{ asdf_yum_java_dependencies }}"
+  become: True
+  when: ansible_os_family == "RedHat"
+
+- name: Add java plugin for asdf
+  command: asdf plugin-add java
+  register: java_add
+  failed_when: java_add == 1
+
+- name: "Install java versions"
+  command: "asdf install java  {{ item }}"
+  loop: "{{ java_versions }}"
+
+- name: Set global versions for python
+  command: "asdf global java {{ java_versions[0] }}
