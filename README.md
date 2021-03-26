@@ -44,7 +44,7 @@ A list of tasks is a string with the tasks' names seperated by a comma: Example 
 ### Overview
 ----------------
 
-*This is a list of the already implemeted tasks, as well as the currently planned task for the future. This list will change over time.*
+*This is a list of already implemeted tasks, as well as the currently planned tasks for the future. This list will change over time.*
 
 - [x] [vscode](#vscode)
 - [x] [dotfiles_vscode](#dotfiles_vscode)
