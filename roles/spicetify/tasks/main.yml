@@ -22,7 +22,7 @@
     - name: Install spicetify dependencies
       package:
         name: "{{ spicetify_dependencies }}"
-        status: present
+        state: present
       become: True
       become_user: root
       become_method: sudo

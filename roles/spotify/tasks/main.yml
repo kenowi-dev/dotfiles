@@ -1,7 +1,7 @@
 - name: Install spotify dependencies
   package:
     name: "{{ spotify_dependencies }}"
-    status: present
+    state: present
   become: True
   become_user: root
   become_method: sudo
