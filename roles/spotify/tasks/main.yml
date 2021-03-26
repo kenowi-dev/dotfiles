@@ -10,5 +10,5 @@
   shell: "flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo"
 
 - name: Install Spotify
-  shell: "flatpak install flathub com.spotify.Client"
+  shell: "flatpak install -y flathub com.spotify.Client"
   become: True
