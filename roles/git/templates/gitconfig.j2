@@ -1,8 +1,8 @@
 [user]
-{% if git_email %}
+{% if git_email|bool %}
 	email = "{{ git_email }}"
 {% endif %}
-{% if git_name %}
+{% if git_name|bool %}
 	name = "{{ git_name }}"
 {% endif %}
 	
