@@ -24,6 +24,11 @@
   become: True
   when: ansible_os_family == "Debian"
 
+- name: enable i386 multiarch 
+  shell: "dpkg --add-architecture i386"
+  become: True
+  when: ansible_os_family == "Debian"
+
 - name: Install Steam
   package:
     name: steam
