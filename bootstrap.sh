@@ -3,7 +3,6 @@
 while [[ $# -gt 0 ]]
 do
 key="$1"
-arguments=""
 
 case $key in
     --tags)
@@ -29,12 +28,15 @@ then
 
   if [ "$(lsb_release -is)" = Ubuntu ]
   then
-      echo "ubuntu"
+      echo "ubuntu"    
       sudo apt-add-repository ppa:ansible/ansible
+      sudo apt update
+      sudo apt upgrade
       sudo apt install ansible      
   elif [ "$(lsb_release -is)" = Fedora ]
   then
       echo "fedora"
+      sudo dnf upgrade
       sudo dnf install ansible
   else
     echo "Cant install ansible for your distro. Please install ansible manually and run this script again." 1>&2
