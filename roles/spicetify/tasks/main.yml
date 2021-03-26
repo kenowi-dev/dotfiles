@@ -1,8 +1,8 @@
 
 - name: Check if spotify directory exists
-    stat:
-      path: "{{ flatpak_installations.stdout }}/app/com.spotify.Client/x86_64/stable/active/files/extra/share/spotify"
-    register: spotify_location
+  stat:
+    path: "{{ flatpak_installations.stdout }}/app/com.spotify.Client/x86_64/stable/active/files/extra/share/spotify"
+  register: spotify_location
 
 - name: check ~/.config/spotify/prefs
   stat:
