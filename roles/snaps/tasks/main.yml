@@ -1,7 +1,7 @@
 - name: install snapd
   package: 
     name: snapd
-    status: present
+    state: present
   become: yes
   become_user: root
   become_method: sudo
