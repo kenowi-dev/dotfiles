@@ -64,23 +64,23 @@ A list of tasks is a string with the tasks' names seperated by a comma: Example 
 
 I try to make all tasks compatible with Ubuntu and Fedora.
 
-## vscode
+### vscode
 --------------
 The [vscode task](#vscode) is only responsible for installing [vscode](https://code.visualstudio.com/).
 Currently this is done using `snap`. In the future this may change or will become configurable, since [WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10) does not support `snaps` (yet).
 
 
-## dotfiles_vscode
+### dotfiles_vscode
 --------------
 This task configures [vscode](https://code.visualstudio.com/) with my settings, extensions and themes. For further information please refer to my [vscode settings repo](https://github.com/systeno/vscode-settings).
 
 
-## zsh
+### zsh
 --------------
 This task is only responsible to install `zsh`.
 
 
-## dotfiles_zsh
+### dotfiles_zsh
 --------------
 This task configures `zsh` with [my dotfiles](https://github.com/systeno/dotfiles).  
 
@@ -93,16 +93,16 @@ The [Powerlevel Theme](https://github.com/romkatv/powerlevel10k) needs [Nerd Fon
 My Themes and shell design is created, while having a [Nord Theme](https://www.nordtheme.com/) active on my terminal.
 
 
-## elixir
+### elixir
 --------------
 This task installs [elixir](https://elixir-lang.org/).
 This task is dependent on the [erlang](#erlang) task.
 
-## erlang
+### erlang
 --------------
 This task installs [erlang](https://www.erlang.org/).
 
-## gaming
+### gaming
 --------------
 The idea is to create a task which will install all necessary tools needed to play games.
 This may include programms like:
@@ -110,48 +110,48 @@ This may include programms like:
 - [x] Discord
 - [ ] Teamspeak
 
-## git
+### git
 --------------
 This task is responsible to install and configure [git](https://git-scm.com/). 
 
 This task will also set a `gitconfig` file. To configure the contens of the file, edit the appropriate settings in `group_vars/local.yml`.
 
 
-## java
+### java
 --------------
 This task is responsible to install `java`.
 For now the latest java version will be installed. In the future this should be configurable.
 
 
-## packages
+### packages
 --------------
 This task installs some usefull packages based on the distro used.
 
 The pacakges installed can be found at `roles/packages/defaults/main.yml`. 
 
 
-## python
+### python
 --------------
 This task is responsible to install `python2` and `python3`.
 
-## snaps
+### snaps
 --------------
 This task installs some usefull snap packages.
 
 The pacakges installed can be found at `roles/snaps/defaults/main.yml`. 
 
-## spotify
+### spotify
 --------------
 This task installs [Spotify](https://www.spotify.com/us/). 
 The installation is done via [Flatpak](https://flatpak.org/).
 [Flatpak](https://flatpak.org/) is used, to make spotify work with [spicetify](#spicetify).
 
-## spicetify
+### spicetify
 --------------
 This task installs [Spicetify](https://github.com/khanhas/spicetify-cli). 
 It will also install all themes available at [spicetify-themes](https://github.com/morpheusthewhite/spicetify-themes) and set the [Nord Theme](https://github.com/morpheusthewhite/spicetify-themes/tree/master/Nord) as the active one.
 
-## uni
+### uni
 --------------
 This task is not yet implemeted. 
 
