@@ -19,4 +19,4 @@
   template:
     src: gitconfig.j2
     dest: "{{ home_path }}/.gitconfig"
-  when: (git_name != false) OR (git_email != false)
+  when: (git_name != false) or (git_email != false)
