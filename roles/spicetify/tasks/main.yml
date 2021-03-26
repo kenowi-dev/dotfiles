@@ -1,5 +1,6 @@
 - name: register flatpak installations path
-    shell: "flatpak --installations"
+    shell: 
+      command: "flatpak --installations"
   register: flatpak_installations
 
 - name: Check if spotify directory exists
