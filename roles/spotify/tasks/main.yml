@@ -6,8 +6,9 @@
   become_user: root
   become_method: sudo
 
-- name: Enable Flatpak remove
+- name: Enable Flatpak remote
   shell: "flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo"
+  become: True
 
 - name: Install Spotify
   shell: "flatpak install -y flathub com.spotify.Client"
