@@ -2,7 +2,10 @@
   block:
     - name: add repository
       shell: "wget https://packages.erlang-solutions.com/erlang-solutions_2.0_all.deb && sudo dpkg -i erlang-solutions_2.0_all.deb"
-
+  
+    - name: Upgrade all apt packages
+      apt: upgrade=dist force_apt_get=yes
+      
     - name: install erlang
       apt:
         name: 
