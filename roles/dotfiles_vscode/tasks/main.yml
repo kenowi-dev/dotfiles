@@ -18,6 +18,11 @@
     creates: "{{ home_path }}/.config/Code/vscode_custom_styles.css"
   when: css_stat.stat.exists
 
+- name: Make sure that the vscode directory exists
+  file:
+    path: "{{ home_path }}/.config/Code/User/"
+    state: directory
+
 - name: Set new settings.json
   get_url:
     url: "https://raw.githubusercontent.com/systeno/vscode-settings/main/settings.json"
