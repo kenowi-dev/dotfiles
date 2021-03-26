@@ -4,12 +4,14 @@
       apt:
         name: "*"
         state: latest
+        update_cache: yes
       when: package_upgrade
 
     - name: Install debian specific packages
       apt:
         name: "{{ item }}"
         state: present
+        update_cache: yes
       loop: "{{ debian_packages }}"
   become: True
   become_user: root
@@ -22,12 +24,14 @@
       yum:
         name: '*'
         state: latest
+        update_cache: yes
       when: package_upgrade
 
     - name: Install redhat specific packages
       yum:
         name: "{{ item }}"
         state: present
+        update_cache: yes
       loop: "{{ redhat_packages }}"
   become: True
   become_user: root

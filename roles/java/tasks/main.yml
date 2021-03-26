@@ -5,6 +5,7 @@
       - default-jdk
       - default-jdk-doc
     state: present
+    update_cache: yes
   become: True
   when: ansible_os_family == "Debian"
 
@@ -14,5 +15,6 @@
       - java-latest-openjdk.x86_64
       - java-latest-openjdk-devel.x86_64
     state: present
+    update_cache: yes
   become: True
   when: ansible_os_family == "RedHat"

@@ -39,6 +39,8 @@
 - name: "install erlang dependencies with yum"
   yum:
     name: "{{ vscode_settings_dependencies }}"
+    state: present
+    update_cache: yes
   become: True
   when: ansible_os_family == "RedHat"
 

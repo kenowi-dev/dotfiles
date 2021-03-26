@@ -9,6 +9,7 @@
           - esl-erlang
           - elixir
         state: present
+        update_cache: yes
       become: True
   when: ansible_os_family == "Debian"
 
@@ -18,5 +19,6 @@
   yum:
     name: elixir
     state: present
+    update_cache: yes
   become: True
   when: ansible_os_family == "RedHat"

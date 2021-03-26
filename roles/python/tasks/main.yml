@@ -6,6 +6,7 @@
   apt:
     name: python2
     state: present
+    update_cache: yes
   become: True
   when: ansible_os_family == "Debian"
 
@@ -22,6 +23,7 @@
       - python3.6 
       - python3-pip
     state: present
+    update_cache: yes
   become: True
 
 - name: "install python3 Redhat"
@@ -31,5 +33,7 @@
       - python2
       - python-pip
       - python3-pip
+      state: present
+      update_cache: yes
   become: True
   when: ansible_os_family == "RedHat"
