@@ -82,7 +82,7 @@ This task is only responsible to install `zsh`.
 
 ## dotfiles_zsh
 --------------
-This task configures `zsh`.  
+This task configures `zsh` with [my dotfiles](https://github.com/systeno/dotfiles).  
 
 As a Shell Plugin Manager I am using [Antibody](https://getantibody.github.io/). 
 
