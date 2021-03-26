@@ -1,3 +1,6 @@
+- name: register flatpak installations path
+    shell: "flatpak --installations"
+  register: flatpak_installations
 
 - name: Check if spotify directory exists
   stat:
@@ -28,11 +31,7 @@
       become_method: sudo
 
     - name: Install spicetify
-      shell: "curl -fsSL https://raw.githubusercontent.com/khanhas/spicetify-cli/master/install.sh | sh"
-
-    - name: register flatpak installations path
-      shell: "flatpak --installations"
-      register: flatpak_installations
+      shell: "curl -fsSL https://raw.githubusercontent.com/khanhas/spicetify-cli/master/install.sh | sh"    
 
     - name: Give write permissions on spotify
       file: 
