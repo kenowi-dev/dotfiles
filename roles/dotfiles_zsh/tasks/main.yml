@@ -79,4 +79,4 @@
 - name: Copy .zsh
   copy:
     src: "{{ home_path }}/.dotfiles/.zsh"
-    dest: "{{ home_path }}/.zsh"
+    dest: "{{ home_path }}/"

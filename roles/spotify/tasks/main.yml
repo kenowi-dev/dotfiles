@@ -6,10 +6,9 @@
   become_user: root
   become_method: sudo
 
-- name: Install the spotify flatpak
-  flatpak:
-    name:  https://dl.flathub.org/repo/appstream/com.spotify.Client.flatpakref
-    state: present
+- name: Enable Flatpak remove
+  shell: "flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo"
+
+- name: Install Spotify
+  shell: "flatpak install flathub com.spotify.Client"
   become: True
-  become_user: root
-  become_method: sudo
