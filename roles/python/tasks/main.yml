@@ -1,6 +1,7 @@
 - name: add repository
   shell: "add-apt-repository universe"
   become: True
+  when: ansible_os_family == "Debian"
 
 - name: "install python debian"
   apt:
