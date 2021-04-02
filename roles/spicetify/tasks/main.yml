@@ -40,12 +40,12 @@
   
     - name: Give write permissions on spotify
       file: 
-        path: "{{ spotify_location.path }}"
+        path: "{{ spotify_location.stat.path }}"
         mode: a+wr
       
     - name: Give write permissions on spotify apps
       file: 
-        path: "{{ spotify_location.path }}/Apps"
+        path: "{{ spotify_location.stat.path }}/Apps"
         mode: a+wr
         recurse: yes
 
