@@ -63,7 +63,7 @@
         dest: "{{ home_path }}/.config/spicetify/config.ini"
 
     - name: apply config
-      shell: "{{ home_path }}/spicetify-cli/spicetify backup apply enable-devtool"
+      shell: "{{ home_path }}/spicetify-cli/spicetify backup apply"
 
   when: pref_location.stat.exists and spotify_location.stat.exists
 
