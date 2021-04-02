@@ -42,12 +42,14 @@
       file: 
         path: "{{ spotify_location.stat.path }}"
         mode: a+wr
+      become: True
       
     - name: Give write permissions on spotify apps
       file: 
         path: "{{ spotify_location.stat.path }}/Apps"
         mode: a+wr
         recurse: yes
+      become: True
 
     - name: Clone Spicetify Themes
       git: 
