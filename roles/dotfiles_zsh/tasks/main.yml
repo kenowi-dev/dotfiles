@@ -2,9 +2,11 @@
   package:
     name: curl
     state: present
+  become: True
 
 - name: Install Antibody
   shell: "curl -sfL git.io/antibody | sh -s - -b {{ home_path }}/.local/bin"
+  become: True
 
 - name: Check if dotfiles already exists
   stat: path="{{ home_path }}/.dotfiles"
