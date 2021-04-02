@@ -14,7 +14,7 @@
   shell: "curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py"
 
 - name: install pip 
-  shell: "python2 get-pip.py"
+  shell: "python get-pip.py"
   become: True
 
 - name: install python 3
@@ -25,6 +25,7 @@
     state: present
     update_cache: yes
   become: True
+  when: ansible_os_family == "Debian"
 
 - name: "install python3 Redhat"
   yum:
