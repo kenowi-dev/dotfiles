@@ -8,8 +8,13 @@ Currently there are only zsh dotfiles. This will most likely change in the futur
 Currently there is no installation script. 
 All dotfiles have to be moved manually. It is recommended to place them all in your home directory.
 
-This dotfiles depend on the use of `zsh` and `antibody` which both have to be installed manually: `sudo dnf install zsh`, `curl -sfL git.io/antibody | sh -s - -b /usr/local/bin`
+### Dependencies
+- `zsh`     : `sudo apt install zsh`
+- `antibody`: `curl -sfL git.io/antibody | sudo sh -s - -b /usr/local/bin`
+- `starship`: `curl -sS https://starship.rs/install.sh | sh`
 
-## Powerlevel Theme
- 
-The powerlevel theme that is used, is created will using the [Nord Theme for Konsole](https://github.com/arcticicestudio/nord-konsole). This means, that the colors may vary depending on the terminal theme used. This will hopefully change in the future, so that the theme is independent from the terminal.
+To set `zsh` as your default shell, use `chsh -s $(which zsh)` (**No** `sudo`, so it will be set for the current user). 
+
+### Fonts
+
+For the `starship` theme to work properly, you need to install a [Nerd Font](https://www.nerdfonts.com/font-downloads), e.g. `JetBrainsMono Nerd Font`.
