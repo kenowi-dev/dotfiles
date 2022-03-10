@@ -36,18 +36,12 @@ setopt      hist_verify
 setopt      auto_cd
 setopt      multios
 
-setopt      nobeep              # No "Beep"ing
+#setopt      nobeep              # No "Beep"ing
 setopt      pushd_ignore_dups   # Don't push the same dir twice 
 
 
-export PATH="$HOME/.local/bin:$PATH"
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
-
-# Select theme based on client capabilities
-if [[ ! $SSH_CONNECTION ]]; then
-    export ZSH_POWERLINE_THEME=yes
-fi
 
 # Preferred editor for local and remote sessions
 if [[ $SSH_CONNECTION ]]; then
@@ -59,9 +53,4 @@ else
     export EDITOR='nano'
     export BROWSER='google-chrome'
 fi
-
-
-# Spicetify
-export SPICETIFY_INSTALL="$HOME/spicetify-cli"
-export PATH="$SPICETIFY_INSTALL:$PATH"
 
