@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+SOURCE="https://github.com/systeno/dotfiles"
+TARGET="$HOME/.dotfiles"
+
+
+error() { printf "$(tput setaf 1)$1$(tput sgr0)\n"; }
+success () { printf "$(tput setaf 2)$1$(tput sgr0)\n"; }
+warn () { printf "$(tput setaf 3)$1$(tput sgr0)\n"; }
+note() { printf "$(tput setaf 4)$1$(tput sgr0)\n"; }
+info() { printf "$(tput setaf 5)$1$(tput sgr0)\n"; }
+
+note "Initiating dotfiles bootstrap"
+
+# use scripts/install instead if already setup
+if [ -d "$TARGET" ]; then
+  error "Repository already setup, use 'dotfiles' command to update it. Aborting!"
+  exit 1
+fi
+
+
+
+info "Setup Repository"
+mkdir -p "$TARGET"
+git clone $SOURCE $TARGET
+success "Repository successfully setup"
+info "Add $TARGET/bin to you path, to use the dotfile manager"

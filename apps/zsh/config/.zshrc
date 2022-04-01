@@ -22,6 +22,8 @@ eval "$(starship init zsh)"
 
 source ~/.zsh/starship
 
+
+
 # Should be at the end of this file
 antibody bundle zsh-users/zsh-syntax-highlighting
 sleep 1

@@ -53,4 +53,3 @@ else
     export EDITOR='nano'
     export BROWSER='google-chrome'
 fi
-

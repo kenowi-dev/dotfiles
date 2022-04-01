@@ -42,3 +42,11 @@ expand-or-complete-with-dots() {
 }
 zle -N expand-or-complete-with-dots
 bindkey "^I" expand-or-complete-with-dots
+
+
+# enable autocompletion for kubectl, if the command is enabled
+# on wsl the command might only be enabled after docker desktop is started
+if command -v kubectl &> /dev/null
+then
+    source <(kubectl completion zsh)
+fi
