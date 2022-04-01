@@ -9,11 +9,10 @@ note() { printf "$(tput setaf 4)$1$(tput sgr0)\n"; }
 info() { printf "$(tput setaf 5)$1$(tput sgr0)\n"; }
 
 zsh_usage() {
-  echo "Usage: ./install.sh [Options]"
+  echo "Usage: ./remove.sh [Options]"
   echo ""
   echo "Options:"
   echo "  help            Show this help message"
-  echo "  all             Removes zsh and all its configuration."
   echo "  config-only     Only removes the zsh configuration."
 }
 
@@ -55,11 +54,8 @@ remove_zsh_config() {
   success "Zsh configuration succesfully removed."
 }
 
-if [ $# -eq 0 ]; then 
-  # needs an argument
-  zsh_usage
-  exit
-elif  [ $# -gt 1 ]; then
+
+if [ $# -gt 1 ]; then 
   error "Too many arguments"
   zsh_usage
   exit 1
@@ -70,7 +66,7 @@ case "X$1" in
     zsh_usage
     exit
     ;;
-  "Xall") 
+  "X") 
     remove_zsh
     remove_zsh_config
     exit

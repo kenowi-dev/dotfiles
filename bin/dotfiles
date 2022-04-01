@@ -58,14 +58,14 @@ install() {
     ARGUMENT="${i#$APP}"
     ARGUMENT="${ARGUMENT#=}"
 
-
     case "X$ARGUMENT" in 
+      "X") ;;
       "Xinstall-only") ;;
-      "Xconfig-only ") ;;
+      "Xconfig-only") ;;
       *)
         error "Invalid argument: $ARGUMENT"
         echo "Use 'dotfiles help' for Usage."
-        exit
+        exit 1
         ;;
     esac
 
@@ -77,23 +77,23 @@ install() {
         source "$DIR/apps/zsh/install.sh" "$ARGUMENT"
         ;;
       "--asdf")
-        source "$INSTALL_DIR/apps/asdf/install.sh" "$ARGUMENT"
+        source "$DIR/apps/asdf/install.sh" "$ARGUMENT"
         exit
         ;;
       "--vscode")
-        source "$INSTALL_DIR/apps/vscode/install.sh" "$ARGUMENT"
+        source "$DIR/apps/vscode/install.sh" "$ARGUMENT"
         exit
         ;;
       "--git")
-        source "$INSTALL_DIR/apps/git/install.sh" "$ARGUMENT"
+        source "$DIR/apps/git/install.sh" "$ARGUMENT"
         exit
         ;;
       "--system")
-        source "$INSTALL_DIR/apps/system/install.sh" "$ARGUMENT"
+        source "$DIR/apps/system/install.sh" "$ARGUMENT"
         exit
         ;;
       "--zsh")
-        source "$INSTALL_DIR/apps/zsh/install.sh" "$ARGUMENT"
+        source "$DIR/apps/zsh/install.sh" "$ARGUMENT"
         exit
         ;;
       *)
@@ -102,23 +102,6 @@ install() {
         ;;
     esac
   done
-}
-
-update () {
-  if [ $# -ne 0 ]; then
-    error "Unknown arguments $@"
-    echo "Use 'dotfiles help' for Usage."
-    exit 1
-  fi
-
-  echo "Update repository..."
-  cd $UPDATE_DIR && git pull origin main -q
-  if [ $? -eq 0 ]; then
-    success "Updated repository"; 
-    echo "To install the any new changes, run 'dotfiles --install'"
-  else
-    error "Error updating the repository" && exit 1
-  fi
 }
 
 remove() {
@@ -151,23 +134,23 @@ remove() {
         source "$DIR/apps/zsh/remove.sh" "$ARGUMENT"
         ;;
       "--asdf")
-        source "$INSTALL_DIR/apps/asdf/remove.sh" "$ARGUMENT"
+        source "$DIR/apps/asdf/remove.sh" "$ARGUMENT"
         exit
         ;;
       "--vscode")
-        source "$INSTALL_DIR/apps/vscode/remove.sh" "$ARGUMENT"
+        source "$DIR/apps/vscode/remove.sh" "$ARGUMENT"
         exit
         ;;
       "--git")
-        source "$INSTALL_DIR/apps/git/remove.sh" "$ARGUMENT"
+        source "$DIR/apps/git/remove.sh" "$ARGUMENT"
         exit
         ;;
       "--system")
-        source "$INSTALL_DIR/apps/system/remove.sh" "$ARGUMENT"
+        source "$DIR/apps/system/remove.sh" "$ARGUMENT"
         exit
         ;;
       "--zsh")
-        source "$INSTALL_DIR/apps/zsh/remove.sh" "$ARGUMENT"
+        source "$DIR/apps/zsh/remove.sh" "$ARGUMENT"
         exit
         ;;
       *)
@@ -194,23 +177,23 @@ dotfile_diff() {
         source "$DIR/apps/zsh/diff.sh" 
         ;;
       "--asdf")
-        source "$INSTALL_DIR/apps/asdf/diff.sh"
+        source "$DIR/apps/asdf/diff.sh"
         exit
         ;;
       "--vscode")
-        source "$INSTALL_DIR/apps/vscode/diff.sh"
+        source "$DIR/apps/vscode/diff.sh"
         exit
         ;;
       "--git")
-        source "$INSTALL_DIR/apps/git/diff.sh"
+        source "$DIR/apps/git/diff.sh"
         exit
         ;;
       "--system")
-        source "$INSTALL_DIR/apps/system/diff.sh"
+        source "$DIR/apps/system/diff.sh"
         exit
         ;;
       "--zsh")
-        source "$INSTALL_DIR/apps/zsh/diff.sh"
+        source "$DIR/apps/zsh/diff.sh"
         exit
         ;;
       *)
@@ -220,6 +203,23 @@ dotfile_diff() {
     esac
     shift
   done
+}
+
+update () {
+  if [ $# -ne 0 ]; then
+    error "Unknown arguments $@"
+    echo "Use 'dotfiles help' for Usage."
+    exit 1
+  fi
+
+  echo "Update repository..."
+  cd $DIR && git pull origin main -q
+  if [ $? -eq 0 ]; then
+    success "Updated repository"; 
+    echo "To install the any new changes, run 'dotfiles --install'"
+  else
+    error "Error updating the repository" && exit 1
+  fi
 }
 
 path() {
@@ -238,7 +238,7 @@ path() {
 # Exit if no command is given
 if [ $# -eq 0 ]; then 
   error "No command given."
-  echo "Use 'dotfiles help' for Usage."
+  usage
   exit 1
 fi
 

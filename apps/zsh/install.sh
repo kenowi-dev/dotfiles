@@ -6,7 +6,7 @@ error() { printf "$(tput setaf 1)$1$(tput sgr0)\n"; }
 success () { printf "$(tput setaf 2)$1$(tput sgr0)\n"; }
 warn () { printf "$(tput setaf 3)$1$(tput sgr0)\n"; }
 note() { printf "$(tput setaf 4)$1$(tput sgr0)\n"; }
-info() { printf "$(tput setaf 5)$1$(tput sgr0)\n"; }
+info() { printf "$(tput sgr0)$1$(tput sgr0)\n"; }
 
 zsh_usage() {
   echo "Usage: ./install.sh [Options]"
@@ -44,7 +44,7 @@ configure_zsh() {
   echo ""
 
   info "Installing starship..."
-  curl -sS https://starship.rs/install.sh | sh -s -- --yes > /dev/null
+  curl -sS https://starship.rs/install.sh | sudo sh -s -- --yes > /dev/null
   install_result "starship"
   echo ""
   

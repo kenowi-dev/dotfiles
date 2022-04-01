@@ -22,7 +22,7 @@ eval "$(starship init zsh)"
 
 source ~/.zsh/starship
 
-
+export PATH="$PATH:$HOME/.dotfiles/bin"
 
 # Should be at the end of this file
 antibody bundle zsh-users/zsh-syntax-highlighting
