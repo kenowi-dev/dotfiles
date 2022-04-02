@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
+set -e
+
 SOURCE="https://github.com/systeno/dotfiles"
 TARGET="$HOME/.dotfiles"
-
 
 error() { printf "$(tput setaf 1)$1$(tput sgr0)\n"; }
 success () { printf "$(tput setaf 2)$1$(tput sgr0)\n"; }
