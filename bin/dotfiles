@@ -27,6 +27,12 @@ DOTFILES_CMD="dotfiles"
 DOTFILES_HELP=false
 # The option to be executed, if no command is set.
 DOTFILES_OPTION="none"
+# The option to be executed, if a command is set.
+DOTFILES_CMD_OPTION="all"
+# Flag, if apps should only be installed
+DOTFILES_INSTALL_ONLY=false
+# Flag, if only the apps config is relevant
+DOTFILES_CONFIG_ONLY=false
 # The apps on which the command runs.
 DOTFILES_APPS=()
 # All positional arguments
@@ -39,16 +45,22 @@ OPTIONS=()
 ######### LOGGING #########
 ###########################
 
-function error() { printf "$(tput setaf 1)$1$(tput sgr0)\n"; }
-function success () { printf "$(tput setaf 2)$1$(tput sgr0)\n"; }
-function warn () { printf "$(tput setaf 3)$1$(tput sgr0)\n"; }
-function note() { printf "$(tput setaf 4)$1$(tput sgr0)\n"; }
-function info() { printf "$(tput setaf 5)$1$(tput sgr0)\n"; }
+function error() { printf "${RED}$1${RESET}\n"; }
+function success () { printf "${GREEN}$1${RESET}\n"; }
+function warn () { printf "${YELLOW}$1${RESET}\n"; }
+function note() { printf "${BLUE}$1${RESET}\n"; }
+function info() { printf "${RESET}$1${RESET}\n"; }
 function fail() {
   error "$1"
   echo "Use 'dotfiles --help' or 'dotfiles <command> --help' for Usage."
   exit 1
 }
+
+# Progress start, Progress step, Progress Finish
+# "  [ Start ] $1"
+# "  [ ... ] $1"
+# "  [ Done ] $1"
+
 
 
 ###########################
@@ -64,30 +76,30 @@ function usage_dotfiles() {
   printf "  ${RESET}dotfiles ${YELLOW}--help${RESET}\n"; 
   printf "  ${RESET}dotfiles ${YELLOW}--path${RESET}\n"; 
   printf "  ${RESET}dotfiles ${YELLOW}--update${RESET}\n";   
-  printf "  ${RESET}dotfiles ${BLUE}install${RESET} ${GREEN}--help${RESET}\n";  
+  printf "  ${RESET}dotfiles ${BLUE}configure${RESET} ${GREEN}--help${RESET}\n";  
   printf "  ${RESET}dotfiles ${BLUE}remove${RESET} ${GREEN}--help${RESET}\n";  
   printf "  ${RESET}dotfiles ${BLUE}diff${RESET} ${GREEN}--help${RESET}\n";  
   echo ""
   echo "${YELLOW}Options: ${RESET}"
   echo "  -h, --help        Shows this help message"
-  echo "  -u, --update      Updates the repository (does NOT run install)"
+  echo "  -u, --update      Updates the repository (does NOT run configure)"
   echo "  -p --path         Show the path to the dotfiles directory"
   echo ""
   echo "${BLUE}Commands: ${RESET}"
   echo "  diff              Show the difference between the installed files and the files in this repository."
-  echo "  install           Installs apps and their config."
+  echo "  configure         Installs apps and their config."
   echo "  remove            Removes apps and their config."
   echo ""
 }
 
-function usage_install() {
+function usage_configure() {
   echo ""
   echo "Usage: "
-  printf "  ${RESET}dotfiles ${BLUE}install${RESET} [${YELLOW}--help${RESET}] [${YELLOW}--all${RESET}] [${YELLOW}--install-only${RESET}] [${YELLOW}--config-only${RESET}] <${GREEN}app${RESET}>\n"; 
+  printf "  ${RESET}dotfiles ${BLUE}configure${RESET} [${YELLOW}--help${RESET}] [${YELLOW}--all${RESET}] [${YELLOW}--install-only${RESET}] [${YELLOW}--config-only${RESET}] <${GREEN}app${RESET}>\n"; 
   echo ""
-  printf "  ${RESET}dotfiles ${BLUE}install${RESET} ${YELLOW}--help${RESET}\n"; 
-  printf "  ${RESET}dotfiles ${BLUE}install${RESET} ${YELLOW}--all${RESET} [(${YELLOW}--install-only${RESET}|${YELLOW}--config-only${RESET})]\n"; 
-  printf "  ${RESET}dotfiles ${BLUE}install${RESET} <${GREEN}app${RESET}> [(${YELLOW}--install-only${RESET}|${YELLOW}--config-only${RESET})]\n"; 
+  printf "  ${RESET}dotfiles ${BLUE}configure${RESET} ${YELLOW}--help${RESET}\n"; 
+  printf "  ${RESET}dotfiles ${BLUE}configure${RESET} ${YELLOW}--all${RESET} [(${YELLOW}--install-only${RESET}|${YELLOW}--config-only${RESET})]\n"; 
+  printf "  ${RESET}dotfiles ${BLUE}configure${RESET} <${GREEN}app${RESET}> [(${YELLOW}--install-only${RESET}|${YELLOW}--config-only${RESET})]\n"; 
   echo ""
   echo "${YELLOW}Options: ${RESET}"
   echo "  --help           Shows this help message"
@@ -154,7 +166,7 @@ function parse_positional_args() {
   # Check if valid command is given (no command is valid as well)
   case "X${POSITIONAL_ARGS[0]}" in
     "X");;
-    "Xinstall");;
+    "Xconfigure");;
     "Xremove");;
     "Xdiff");;
     *) fail "Unknown command ${POSITIONAL_ARGS[0]}" ;;
@@ -188,8 +200,8 @@ function parse_options() {
       "-u" | "--update")  DOTFILES_OPTION=update ;;
       "-p" | "--path")    DOTFILES_OPTION=path ;;
       "--all")            DOTFILES_APPS=("${SUPPORTED_APPS[@]}") ;;
-      "--install-only")   DOTFILES_INSTALL_ONLY=true ;;
-      "--config-only")    DOTFILES_CONFIG_ONLY=true ;;      
+      "--install-only")   DOTFILES_INSTALL_ONLY=true; DOTFILES_CMD_OPTION="install" ;;
+      "--config-only")    DOTFILES_CONFIG_ONLY=true; DOTFILES_CMD_OPTION="config" ;;
       *)                  fail "Unknown argument ${i}" ;;
     esac
   done  
@@ -229,7 +241,7 @@ function dotfiles_update () {
   cd $DOTFILES_DIR && git pull origin main -q
   if [ $? -eq 0 ]; then
     success "Updated repository"; 
-    echo "To install any new changes, run 'dotfiles install --all'"
+    echo "To configure any new changes, run 'dotfiles configure --all'"
   else
     error "Error updating the repository" && exit 1
   fi
@@ -262,12 +274,12 @@ done
 
 # Fill the SUPPORTED_APPS array, and show warning if an app is not supported.
 for i in $(ls -d ${DOTFILES_APPS_DIR}/*/); do 
-  local app=$(basename ${i})
+  APP=$(basename ${i})
 
-  if [ ! -f "${DOTFILES_APPS_DIR}/${app}/${app}.sh" ]; then
-    warn "Apps folder contains '${app}', which does not contain a supported script. You wont be able to configre '${app}'."
+  if [ ! -f "${DOTFILES_APPS_DIR}/${APP}/${APP}.sh" ]; then
+    warn "Apps folder contains '${APP}', which does not contain a supported script. You wont be able to configre '${APP}'."
   else        
-    SUPPORTED_APPS+=("${app}")
+    SUPPORTED_APPS+=("${APP}")
   fi
 done
 
@@ -294,6 +306,8 @@ for i in "${DOTFILES_APPS[@]}"; do
 done
 
 # Run all need app functions
-for i in "${DOTFILES_APPS[@]}"; do    
-  ${i}_${DOTFILES_CMD}
+for i in "${DOTFILES_APPS[@]}"; do 
+
+  ${i}_${DOTFILES_CMD}_${DOTFILES_CMD_OPTION}    
+  exit
 done
