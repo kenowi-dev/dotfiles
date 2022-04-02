@@ -1,9 +1,16 @@
 #!/usr/bin/env bash
 
-PARENT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-DIR="$( cd "$( dirname "$PARENT" )" >/dev/null 2>&1 && pwd )"
+###########################
+######## VARIABLES ########
+###########################
 
-#Colors
+
+## DIRECTORIES
+DOTFILES_BIN="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+DOTFILES_DIR="$( cd "$( dirname "$DOTFILES_BIN" )" >/dev/null 2>&1 && pwd )"
+DOTFILES_APPS_DIR="${DOTFILES_DIR}/apps"
+
+## Colors
 RED=`tput setaf 1`
 GREEN=`tput setaf 2`
 YELLOW=`tput setaf 3`
@@ -12,268 +19,281 @@ MAGENTA=`tput setaf 5`
 CYAN=`tput setaf 6`
 RESET=`tput sgr0`
 
-error() { printf "$(tput setaf 1)$1$(tput sgr0)\n"; }
-success () { printf "$(tput setaf 2)$1$(tput sgr0)\n"; }
-warn () { printf "$(tput setaf 3)$1$(tput sgr0)\n"; }
-note() { printf "$(tput setaf 4)$1$(tput sgr0)\n"; }
-info() { printf "$(tput setaf 5)$1$(tput sgr0)\n"; }
+# All supported apps.
+SUPPORTED_APPS=()
+# The command to be executed. "dotfiles" is the substitution for no command.
+DOTFILES_CMD="dotfiles"
+# Is the --help option set
+DOTFILES_HELP=false
+# The option to be executed, if no command is set.
+DOTFILES_OPTION="none"
+# The apps on which the command runs.
+DOTFILES_APPS=()
+# All positional arguments
+POSITIONAL_ARGS=()
+# All options.
+OPTIONS=()
 
-usage() {
+
+###########################
+######### LOGGING #########
+###########################
+
+function error() { printf "$(tput setaf 1)$1$(tput sgr0)\n"; }
+function success () { printf "$(tput setaf 2)$1$(tput sgr0)\n"; }
+function warn () { printf "$(tput setaf 3)$1$(tput sgr0)\n"; }
+function note() { printf "$(tput setaf 4)$1$(tput sgr0)\n"; }
+function info() { printf "$(tput setaf 5)$1$(tput sgr0)\n"; }
+function fail() {
+  error "$1"
+  echo "Use 'dotfiles --help' or 'dotfiles <command> --help' for Usage."
+  exit 1
+}
+
+
+###########################
+######### USAGES ##########
+###########################
+
+
+function usage_dotfiles() {
   echo ""
   echo "Usage: "
-  printf "\r${RESET}dotfiles <${YELLOW}command${RESET}> <${BLUE}app${RESET}[=${GREEN}argument${RESET}]>...\n"; 
-  printf "\r${RESET}dotfiles ${YELLOW}help${RESET}\n"; 
-  printf "\r${RESET}dotfiles ${YELLOW}path${RESET}\n"; 
-  printf "\r${RESET}dotfiles ${YELLOW}update${RESET}\n"; 
-  printf "\r${RESET}dotfiles ${YELLOW}diff${RESET} <${BLUE}app${RESET}>...\n";  
-  printf "\r${RESET}dotfiles ${YELLOW}install${RESET} <${BLUE}app${RESET}[=${GREEN}(install-only|config-only)${RESET}]>...\n"; 
-  printf "\r${RESET}dotfiles ${YELLOW}remove${RESET} <${BLUE}app${RESET}[=${GREEN}config-only${RESET}]>...\n"; 
+  printf "  ${RESET}dotfiles [${YELLOW}--help${RESET}] [${YELLOW}--path${RESET}] [${YELLOW}--update${RESET}] <${BLUE}command${RESET}> [<${GREEN}args${RESET}>]\n"; 
   echo ""
-  echo "${YELLOW}Commands: ${RESET}"
-  echo "  help            Shows this help message"
-  echo "  diff            Show the difference between the installed files and the files in this repository."
-  echo "  install         Installs apps and their config."
-  echo "  update          Updates the repository (does NOT run install)"
-  echo "  remove          Removes apps and their config."
-  echo "  path            Show the path to the dotfiles directory"
+  printf "  ${RESET}dotfiles ${YELLOW}--help${RESET}\n"; 
+  printf "  ${RESET}dotfiles ${YELLOW}--path${RESET}\n"; 
+  printf "  ${RESET}dotfiles ${YELLOW}--update${RESET}\n";   
+  printf "  ${RESET}dotfiles ${BLUE}install${RESET} ${GREEN}--help${RESET}\n";  
+  printf "  ${RESET}dotfiles ${BLUE}remove${RESET} ${GREEN}--help${RESET}\n";  
+  printf "  ${RESET}dotfiles ${BLUE}diff${RESET} ${GREEN}--help${RESET}\n";  
+  echo ""
+  echo "${YELLOW}Options: ${RESET}"
+  echo "  -h, --help        Shows this help message"
+  echo "  -u, --update      Updates the repository (does NOT run install)"
+  echo "  -p --path         Show the path to the dotfiles directory"
+  echo ""
+  echo "${BLUE}Commands: ${RESET}"
+  echo "  diff              Show the difference between the installed files and the files in this repository."
+  echo "  install           Installs apps and their config."
+  echo "  remove            Removes apps and their config."
+  echo ""
+}
+
+function usage_install() {
+  echo ""
+  echo "Usage: "
+  printf "  ${RESET}dotfiles ${BLUE}install${RESET} [${YELLOW}--help${RESET}] [${YELLOW}--all${RESET}] [${YELLOW}--install-only${RESET}] [${YELLOW}--config-only${RESET}] <${GREEN}app${RESET}>\n"; 
+  echo ""
+  printf "  ${RESET}dotfiles ${BLUE}install${RESET} ${YELLOW}--help${RESET}\n"; 
+  printf "  ${RESET}dotfiles ${BLUE}install${RESET} ${YELLOW}--all${RESET} [(${YELLOW}--install-only${RESET}|${YELLOW}--config-only${RESET})]\n"; 
+  printf "  ${RESET}dotfiles ${BLUE}install${RESET} <${GREEN}app${RESET}> [(${YELLOW}--install-only${RESET}|${YELLOW}--config-only${RESET})]\n"; 
+  echo ""
+  echo "${YELLOW}Options: ${RESET}"
+  echo "  --help           Shows this help message"
+  echo "  --all            Installs all apps."
+  echo "  --install-only   Only installs the app, without configuring it."
+  echo "  --config-only    Only configures the app. If the app is not installed, this will do nothing."
+  echo ""
   echo ""
   echo "${BLUE}Apps: ${RESET}"
-  echo "  --all           Installs and configures all apps."
-  echo "  --asdf          Installs and configures asdf."
-  echo "  --vscode        Installs and configures vscode."
-  echo "  --git           Installs and configures git."
-  echo "  --system        Configures some system settings."
-  echo "  --zsh           Installs and configures zsh."
-  echo ""
-  echo "${GREEN}Argument: ${RESET}"
-  echo "  install-only    Only installs the app, without configuring it."
-  echo "  config-only     Only configures the app. If the app is not installed, this will do nothing."
+  for i in "${SUPPORTED_APPS[@]}"; do
+    printf "  %-16s %s\n" "${i}" "Installs and configures ${i}."
+  done 
   echo ""
 }
 
-install() {
-  for i in "$@"; do
-    # Split Parameter in app and argument parts
-    APP="${i%=*}"
-    ARGUMENT="${i#$APP}"
-    ARGUMENT="${ARGUMENT#=}"
+function usage_remove() {
+  echo ""
+  echo "Usage: "
+  printf "  ${RESET}dotfiles ${BLUE}remove${RESET} [${YELLOW}--help${RESET}] [${YELLOW}--all${RESET}] [${YELLOW}--config-only${RESET}] <${GREEN}app${RESET}>\n"; 
+  echo ""
+  printf "  ${RESET}dotfiles ${BLUE}remove${RESET} ${YELLOW}--help${RESET}\n"; 
+  printf "  ${RESET}dotfiles ${BLUE}remove${RESET} ${YELLOW}--all${RESET} [${YELLOW}--config-only${RESET}]\n"; 
+  printf "  ${RESET}dotfiles ${BLUE}remove${RESET} <${GREEN}app${RESET}> [${YELLOW}--config-only${RESET}]\n"; 
+  echo ""
+  echo "${YELLOW}Options: ${RESET}"
+  echo "  --help              Shows this help message"
+  echo "  --all               Removes all apps."
+  echo "  --config-only       Only removes the configuration without removing the app itself."
+  echo ""
+  echo "${BLUE}Apps: ${RESET}"
+  for i in "${SUPPORTED_APPS[@]}"; do
+    printf "  %-16s %s\n" "${i}" "Removes ${i} and its configuration."
+  done 
+  echo ""
+}
 
-    case "X$ARGUMENT" in 
-      "X") ;;
-      "Xinstall-only") ;;
-      "Xconfig-only") ;;
-      *)
-        error "Invalid argument: $ARGUMENT"
-        echo "Use 'dotfiles help' for Usage."
-        exit 1
-        ;;
-    esac
+function usage_diff() {
+  echo ""
+  echo "Usage: "
+  printf "  ${RESET}dotfiles ${BLUE}diff${RESET} [${YELLOW}--help${RESET}] [${YELLOW}--all${RESET}] <${GREEN}app${RESET}>\n"; 
+  echo ""
+  printf "  ${RESET}dotfiles ${BLUE}diff${RESET} ${YELLOW}--help${RESET}\n"; 
+  printf "  ${RESET}dotfiles ${BLUE}diff${RESET} ${YELLOW}--all${RESET}\n"; 
+  printf "  ${RESET}dotfiles ${BLUE}diff${RESET} <${GREEN}app${RESET}>\n"; 
+  echo ""
+  echo "${YELLOW}Options: ${RESET}"
+  echo "  --help              Shows this help message"
+  echo "  --all               Removes all apps."
+  echo ""
+  echo ""
+  echo "${BLUE}Apps: ${RESET}"
+  for i in "${SUPPORTED_APPS[@]}"; do
+    printf "  %-16s %s\n" "${i}" "Shows the difference between the installed files this repository"
+  done 
+  echo ""
+}
 
-    case "$APP" in
-      "--all")
-        source "$DIR/apps/asdf/install.sh" "$ARGUMENT"
-        source "$DIR/apps/vscode/install.sh" "$ARGUMENT"
-        source "$DIR/apps/git/install.sh" "$ARGUMENT"
-        source "$DIR/apps/zsh/install.sh" "$ARGUMENT"
-        ;;
-      "--asdf")
-        source "$DIR/apps/asdf/install.sh" "$ARGUMENT"
-        exit
-        ;;
-      "--vscode")
-        source "$DIR/apps/vscode/install.sh" "$ARGUMENT"
-        exit
-        ;;
-      "--git")
-        source "$DIR/apps/git/install.sh" "$ARGUMENT"
-        exit
-        ;;
-      "--system")
-        source "$DIR/apps/system/install.sh" "$ARGUMENT"
-        exit
-        ;;
-      "--zsh")
-        source "$DIR/apps/zsh/install.sh" "$ARGUMENT"
-        exit
-        ;;
-      *)
-        error "Unknown app."
-        echo "Use 'dotfiles help' for Usage."
-        ;;
-    esac
+###########################
+######## PARSING ##########
+###########################
+
+function parse_positional_args() {
+
+  # Check if valid command is given (no command is valid as well)
+  case "X${POSITIONAL_ARGS[0]}" in
+    "X");;
+    "Xinstall");;
+    "Xremove");;
+    "Xdiff");;
+    *) fail "Unknown command ${POSITIONAL_ARGS[0]}" ;;
+  esac
+
+  # Set the command
+  DOTFILES_CMD="${POSITIONAL_ARGS[0]:="dotfiles"}"
+  # Remove command from positional args
+  DOTFILES_APPS=("${POSITIONAL_ARGS[@]:1}")
+
+  # Check if all given apps are supported
+  IS_SUPPORTED=false
+  for i in "${DOTFILES_APPS[@]}"; do
+    for j in "${SUPPORTED_APPS[@]}"; do
+      if [ "${i}" = "${j}" ]; then
+        IS_SUPPORTED=true
+        break
+      fi
+    done
+    if [ "${IS_SUPPORTED}" = false ]; then
+      fail "Unknown app ${i}"
+    fi
   done
 }
 
-remove() {
-  for i in "$@"; do
-    # Split Parameter in app and argument parts
-    APP="${i%=*}"
-    ARGUMENT="${i#$APP}"
-    ARGUMENT="${ARGUMENT#=}"
-
-
-    case "X$ARGUMENT" in 
-      "Xinstall-only") 
-        error "Argument: $ARGUMENT is only allowd on the 'dotfile install' command."
-        echo "Use 'dotfiles help' for Usage."
-        exit
-        ;;
-      "Xconfig-only ") ;;
-      *)
-        error "Invalid argument: $ARGUMENT"
-        echo "Use 'dotfiles help' for Usage."
-        exit
-        ;;
+function parse_options() {
+  DOTFILES_OPTION=none
+  for i in "${OPTIONS[@]}"; do
+    case "${i}" in
+      "-h" | "--help")    DOTFILES_HELP=true ;;
+      "-u" | "--update")  DOTFILES_OPTION=update ;;
+      "-p" | "--path")    DOTFILES_OPTION=path ;;
+      "--all")            DOTFILES_APPS=("${SUPPORTED_APPS[@]}") ;;
+      "--install-only")   DOTFILES_INSTALL_ONLY=true ;;
+      "--config-only")    DOTFILES_CONFIG_ONLY=true ;;      
+      *)                  fail "Unknown argument ${i}" ;;
     esac
-
-    case "$APP" in
-      "--all")
-        source "$DIR/apps/asdf/remove.sh" "$ARGUMENT"
-        source "$DIR/apps/vscode/remove.sh" "$ARGUMENT"
-        source "$DIR/apps/git/remove.sh" "$ARGUMENT"
-        source "$DIR/apps/zsh/remove.sh" "$ARGUMENT"
-        ;;
-      "--asdf")
-        source "$DIR/apps/asdf/remove.sh" "$ARGUMENT"
-        exit
-        ;;
-      "--vscode")
-        source "$DIR/apps/vscode/remove.sh" "$ARGUMENT"
-        exit
-        ;;
-      "--git")
-        source "$DIR/apps/git/remove.sh" "$ARGUMENT"
-        exit
-        ;;
-      "--system")
-        source "$DIR/apps/system/remove.sh" "$ARGUMENT"
-        exit
-        ;;
-      "--zsh")
-        source "$DIR/apps/zsh/remove.sh" "$ARGUMENT"
-        exit
-        ;;
-      *)
-        error "Unknown app."
-        echo "Use 'dotfiles help' for Usage."
-        ;;
-    esac
-  done
+  done  
 }
 
-dotfile_diff() {
-  if [ $# -eq 0 ]; then
-    error "Missing app"
-    echo "Use 'dotfiles help' for Usage."
-    exit 1
+function check_option_integrity() {
+  if [ "${DOTFILES_HELP}" = true ] && [ ${#OPTIONS[@]} -gt 1 ]; then 
+    fail "--help cannot be used with other arguments"
   fi
 
-  while [[ $# -gt 0 ]]; do
-    case "$1" in
-      "--all")
-        source "$DIR/apps/asdf/diff.sh" 
-        source "$DIR/apps/vscode/diff.sh"
-        source "$DIR/apps/git/diff.sh" 
-        source "$DIR/apps/zsh/diff.sh" 
-        ;;
-      "--asdf")
-        source "$DIR/apps/asdf/diff.sh"
-        exit
-        ;;
-      "--vscode")
-        source "$DIR/apps/vscode/diff.sh"
-        exit
-        ;;
-      "--git")
-        source "$DIR/apps/git/diff.sh"
-        exit
-        ;;
-      "--system")
-        source "$DIR/apps/system/diff.sh"
-        exit
-        ;;
-      "--zsh")
-        source "$DIR/apps/zsh/diff.sh"
-        exit
-        ;;
-      *)
-        error "Unknown app."
-        echo "Use 'dotfiles help' for Usage."
-        ;;
-    esac
-    shift
-  done
-}
-
-update () {
-  if [ $# -ne 0 ]; then
-    error "Unknown arguments $@"
-    echo "Use 'dotfiles help' for Usage."
-    exit 1
+  if [ "${DOTFILES_OPTION}" != "none" ] && [ ${#OPTIONS[@]} -gt 1 ]; then
+    fail "--${DOTFILES_OPTION} cannot be used with other arguments"
+  fi
+  
+  if [ "${DOTFILES_INSTALL_ONLY}" = true ] && [ "${DOTFILES_CONFIG_ONLY}" = true ]; then
+    fail "--install-only and --config-only cannot be used together."
   fi
 
+  if [ "${DOTFILES_CMD}" != "dotfiles" ] && [ ${#DOTFILES_APPS[@]} -eq 0 ] && [ ${#OPTIONS[@]} -gt 0 ] && [ "${DOTFILES_HELP}" != true ]; then
+    fail "No apps given. Either use --all or set the apps manually."
+  fi
+
+  if [ ${#DOTFILES_APPS[@]} -eq 0 ] && [ ${#OPTIONS[@]} -eq 0 ]; then
+    # if no apps and no arguments are give, just output the usage for the command
+    usage_${DOTFILES_CMD}
+    exit 1
+  fi
+}
+
+
+###########################
+######## DOTFILES #########
+###########################
+
+function dotfiles_update () {
   echo "Update repository..."
-  cd $DIR && git pull origin main -q
+  cd $DOTFILES_DIR && git pull origin main -q
   if [ $? -eq 0 ]; then
     success "Updated repository"; 
-    echo "To install the any new changes, run 'dotfiles --install'"
+    echo "To install any new changes, run 'dotfiles install --all'"
   else
     error "Error updating the repository" && exit 1
   fi
 }
 
-path() {
-  if [ $# -ne 0 ]; then
-    error "Unknown arguments $@"
-    echo "Use 'dotfiles help' for Usage."
-    exit 1
-  fi
-
+function dotfiles_path() {
   printf "Path to dotfile repository: "
-  note "$DIR"; 
+  note "$DOTFILES_DIR"; 
 }
 
-######## ENTRY POINT ########
-
-# Exit if no command is given
-if [ $# -eq 0 ]; then 
-  error "No command given."
-  usage
+function dotfiles_none() {
+  usage_dotfiles
   exit 1
+}
+
+
+###########################
+###### ENTRY POINT ########
+###########################
+
+
+# Split Positional args from options
+while [[ $# -gt 0 ]]; do
+  case "${1}" in
+    -*|--*) OPTIONS+=("$1") ;;
+    *) POSITIONAL_ARGS+=("$1") ;;
+  esac
+  shift
+done
+
+# Fill the SUPPORTED_APPS array, and show warning if an app is not supported.
+for i in $(ls -d ${DOTFILES_APPS_DIR}/*/); do 
+  local app=$(basename ${i})
+
+  if [ ! -f "${DOTFILES_APPS_DIR}/${app}/${app}.sh" ]; then
+    warn "Apps folder contains '${app}', which does not contain a supported script. You wont be able to configre '${app}'."
+  else        
+    SUPPORTED_APPS+=("${app}")
+  fi
+done
+
+parse_positional_args 
+parse_options
+check_option_integrity
+
+
+# Output usage if set
+if [ "${DOTFILES_HELP}" = true ]; then
+  usage_${DOTFILES_CMD}
+  exit
 fi
 
+# If no command is given, run the given option. 
+if [ "${DOTFILES_CMD}" = "dotfiles" ]; then
+  dotfiles_${DOTFILES_OPTION}
+  exit
+fi
 
-COMMAND=$1
-shift
-# Check the command and run the appropriate function
-case "X$COMMAND" in 
-  "Xinstall") 
-    install "$@"
-    exit
-    ;;
-  "Xremove") 
-    remove "$@"
-    ;;
-  "Xhelp")
-    usage
-    exit
-    ;;  
-  "Xupdate") 
-    update "$@"
-    exit
-    ;;
-  "Xdiff") 
-    dotfile_diff "$@"
-    exit
-    ;;
-  "Xpath") 
-    path "$@"
-    exit
-    ;;
-  *)
-    error "Invalid command: $COMMAND"
-    echo ""
-    usage
-    exit
-    ;;
-esac
+# Source all needed apps
+for i in "${DOTFILES_APPS[@]}"; do    
+  source "${DOTFILES_APPS_DIR}/${i}/${i}.sh" 
+done
+
+# Run all need app functions
+for i in "${DOTFILES_APPS[@]}"; do    
+  ${i}_${DOTFILES_CMD}
+done
