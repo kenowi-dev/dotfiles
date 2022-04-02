@@ -21,13 +21,46 @@ If you changed the install location, remember to change this path too.
 
 ## Supported Apps
 
-| app    | Install command | remove command | diff command |
-|--------|-----------------|----------------|--------------|
-| asdf   | [ ]             | [ ]            | [ ]          |
-| git    | [ ]             | [ ]            | [ ]          |
-| system | [ ]             | [ ]            | [ ]          |
-| vscode | [ ]             | [ ]            | [ ]          |
-| zsh    | [ ]             | [ ]            | [ ]          |
+### asdf
+#### Install
+Not yet implemented.
+#### Remove
+Not yet implemented.
+#### Diff
+Not yet implemented.
+
+### git
+#### Install
+Not yet implemented.
+#### Remove
+Not yet implemented.
+#### Diff
+Not yet implemented.
+
+### system
+#### Install
+Not yet implemented.
+#### Remove
+Not yet implemented.
+#### Diff
+Not yet implemented.
+
+### vscode
+#### Install
+Not yet implemented.
+#### Remove
+Not yet implemented.
+#### Diff
+Not yet implemented.
+
+### zsh
+#### Install
+Not yet implemented.
+#### Remove
+Not yet implemented.
+#### Diff
+Not yet implemented.
+
 
 ## Dependencies
 
