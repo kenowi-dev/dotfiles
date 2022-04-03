@@ -33,6 +33,8 @@ DOTFILES_CMD_OPTION="all"
 DOTFILES_INSTALL_ONLY=false
 # Flag, if only the apps config is relevant
 DOTFILES_CONFIG_ONLY=false
+# Flag, if all apps should be considered
+DOTFILES_INSTALL_ALL=true
 # The apps on which the command runs.
 DOTFILES_APPS=()
 # All positional arguments
@@ -45,28 +47,54 @@ OPTIONS=()
 ######### LOGGING #########
 ###########################
 
-function error() { printf "${RED}$1${RESET}\n"; }
-function success () { printf "${GREEN}$1${RESET}\n"; }
-function warn () { printf "${YELLOW}$1${RESET}\n"; }
-function note() { printf "${BLUE}$1${RESET}\n"; }
-function info() { printf "${RESET}$1${RESET}\n"; }
-function fail() {
-  error "$1"
+function process_error() { 
+  printf "${RED}ERROR: $1 ${RESET}\n"; 
+  echo ""
+}
+function process_ok () { 
+  printf "${GREEN}DONE:${RESET}  $1 ${RESET}\n"; 
+  echo ""
+}
+function process_warn () {
+  printf "  ${YELLOW}>>   $1 ${RESET}\n";
+}
+function process_start() { 
+  printf "${BLUE}START:${RESET} $1 ${RESET}\n"; 
+}
+function process_step() { 
+  printf "  ${BLUE}>>${RESET}   $1 ${RESET}\n"; 
+}
+function process_fail() {
+  printf "${RED}FAIL:  $1 Aborting...${RESET}\n"; 
+  echo ""
   echo "Use 'dotfiles --help' or 'dotfiles <command> --help' for Usage."
+  echo ""
   exit 1
 }
-
-# Progress start, Progress step, Progress Finish
-# "  [ Start ] $1"
-# "  [ ... ] $1"
-# "  [ Done ] $1"
-
-
+function warning() {
+  printf "${YELLOW}$1${RESET}\n"
+}
+function fail() {
+  printf "${RED}$1 Aborting...${RESET}\n"
+  echo ""
+  echo "Use 'dotfiles --help' or 'dotfiles <command> --help' for Usage."
+  echo ""
+  exit 1
+}
+function task_start() {
+  printf "${RED}$1 Aborting...${RESET}\n"
+  echo ""
+  echo "Use 'dotfiles --help' or 'dotfiles <command> --help' for Usage."
+  echo ""
+  exit 1
+}
 
 ###########################
 ######### USAGES ##########
 ###########################
 
+
+# -v, --verbose option to show output of used commands
 
 function usage_dotfiles() {
   echo ""
@@ -199,7 +227,7 @@ function parse_options() {
       "-h" | "--help")    DOTFILES_HELP=true ;;
       "-u" | "--update")  DOTFILES_OPTION=update ;;
       "-p" | "--path")    DOTFILES_OPTION=path ;;
-      "--all")            DOTFILES_APPS=("${SUPPORTED_APPS[@]}") ;;
+      "--all")            DOTFILES_APPS=("${SUPPORTED_APPS[@]}"); DOTFILES_INSTALL_ALL=true ;;
       "--install-only")   DOTFILES_INSTALL_ONLY=true; DOTFILES_CMD_OPTION="install" ;;
       "--config-only")    DOTFILES_CONFIG_ONLY=true; DOTFILES_CMD_OPTION="config" ;;
       *)                  fail "Unknown argument ${i}" ;;
@@ -224,6 +252,14 @@ function check_option_integrity() {
     fail "No apps given. Either use --all or set the apps manually."
   fi
 
+  if [ "${DOTFILES_INSTALL_ALL}" = true ] && [ "${DOTFILES_CMD}" = "dotfiles" ]; then
+    fail "--all not allowed here."
+  fi
+
+  if [ "${DOTFILES_INSTALL_ALL}" = true ] && [ "${#POSITIONAL_ARGS[@]}" -gt 1 ]; then
+    fail "Cannot mix manually set apps and --all argument."
+  fi
+
   if [ ${#DOTFILES_APPS[@]} -eq 0 ] && [ ${#OPTIONS[@]} -eq 0 ]; then
     # if no apps and no arguments are give, just output the usage for the command
     usage_${DOTFILES_CMD}
@@ -237,19 +273,22 @@ function check_option_integrity() {
 ###########################
 
 function dotfiles_update () {
-  echo "Update repository..."
-  cd $DOTFILES_DIR && git pull origin main -q
-  if [ $? -eq 0 ]; then
-    success "Updated repository"; 
+  process_start "Update repository"
+  process_step "Pulling repository"
+  cd $DOTFILES_DIR && git pull origin main -q  
+  if [ $? -eq 0 ]; then    
+    process_ok "Updated repository"; 
     echo "To configure any new changes, run 'dotfiles configure --all'"
+    echo ""
   else
-    error "Error updating the repository" && exit 1
+    process_error "Error updating the repository"
+    exit 1
   fi
 }
 
 function dotfiles_path() {
-  printf "Path to dotfile repository: "
-  note "$DOTFILES_DIR"; 
+  echo "$DOTFILES_DIR"; 
+  echo ""
 }
 
 function dotfiles_none() {
@@ -277,16 +316,16 @@ for i in $(ls -d ${DOTFILES_APPS_DIR}/*/); do
   APP=$(basename ${i})
 
   if [ ! -f "${DOTFILES_APPS_DIR}/${APP}/${APP}.sh" ]; then
-    warn "Apps folder contains '${APP}', which does not contain a supported script. You wont be able to configre '${APP}'."
+    warning "Apps folder contains '${APP}', which does not contain a supported script. You wont be able to configre '${APP}'."
   else        
     SUPPORTED_APPS+=("${APP}")
   fi
 done
 
-parse_positional_args 
+parse_positional_args
+
 parse_options
 check_option_integrity
-
 
 # Output usage if set
 if [ "${DOTFILES_HELP}" = true ]; then
@@ -307,7 +346,7 @@ done
 
 # Run all need app functions
 for i in "${DOTFILES_APPS[@]}"; do 
-
-  ${i}_${DOTFILES_CMD}_${DOTFILES_CMD_OPTION}    
-  exit
+  printf "${MAGENTA}**** RUNNING TASK: ${i} *****${RESET}\n"
+  ${i}_${DOTFILES_CMD}_${DOTFILES_CMD_OPTION}      
 done
+exit

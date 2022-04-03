@@ -22,6 +22,7 @@ eval "$(starship init zsh)"
 
 source ~/.zsh/starship
 
+
 export PATH="$PATH:$HOME/.dotfiles/bin"
 
 # Should be at the end of this file

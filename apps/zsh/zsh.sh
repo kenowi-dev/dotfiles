@@ -3,96 +3,91 @@ ZSH_DIR="${DOTFILES_APPS_DIR}/zsh"
 
 log_install_result() {
   if [ $? -eq 0 ]; then
-      info "$1 installed"
+      process_step "$1 installed"
   else
-      fail "Error installing $1. Exit setup..."
+      process_fail "Error installing $1. Exit setup..."
   fi
 }
 
 zsh_configure_all() {
   zsh_configure_install
-  echo ""
   zsh_configure_config
 }
 
 zsh_configure_install() {
-  note "Installing zsh"
+  process_start "Installing zsh"
+  process_step "apt install zsh"
   sudo apt install zsh -y > /dev/null 2>&1
-  [ $? -eq 0 ] && success "Zsh successfully installed." || fail "Error installing zsh. Exit setup..."
+  [ $? -eq 0 ] && process_ok "Zsh successfully installed." || process_fail "Error installing zsh. Exit setup..."
 }
 
 zsh_configure_config() {
-  note "Configuring zsh"
-  info "Installing antibody..."
+  process_start "Configuring zsh"
+  process_step "Installing antibody"
   curl -sfL git.io/antibody | sudo sh -s - -b /usr/local/bin > /dev/null 2>&1
   log_install_result "antibody"
-  echo ""
 
-  info "Installing starship..."
+  process_step "Installing starship"
   curl -sS https://starship.rs/install.sh | sudo sh -s -- --yes > /dev/null
   log_install_result "starship"
-  echo ""
   
-  warn "Setting ZSH as the default Shell. This will need your password."
-  chsh -s $(which zsh)
-  [ $? -eq 0 ] && info "Zsh set as the default Shell." || fail "Error setting zsh as the default shell."
-  echo ""
+  process_step "Setting ZSH as the default Shell."
+  sudo chsh -s $(which zsh) $(whoami)
+  [ $? -eq 0 ] && process_step "Zsh set as the default Shell." || process_fail "Error setting zsh as the default shell."
 
-  info "Copying .zshrc"
+  process_step "Copying .zshrc"
   cp "${ZSH_DIR}/config/.zshrc" "${HOME}/.zshrc"
     
-  info "Copying .zshenv"
+  process_step "Copying .zshenv"
   cp "${ZSH_DIR}/config/.zshenv" "${HOME}/.zshenv"
 
-  info "Copying .zprofile"
+  process_step "Copying .zprofile"
   cp "${ZSH_DIR}/config/.zprofile" "${HOME}/.zprofile"
 
-  info "Copying .zsh config folder"
+  process_step "Copying .zsh config folder"
   cp -r "${ZSH_DIR}/config/.zsh" "${HOME}"
-  echo ""
 
-  success "Zsh successfully configured."
+  process_ok "Zsh successfully configured."
 }
 
 zsh_remove_all() {
   zsh_remove_config
-  echo ""
 
-  note "Removing zsh"
+  process_start "Removing zsh"
+  process_step "apt remove zsh"
   sudo apt remove zsh -y > /dev/null 2>&1
-  [ $? -eq 0 ] && success "Zsh successfully removed." || fail "Error removing zsh. Exit setup..."
+  [ $? -eq 0 ] && process_ok "Zsh successfully removed." || process_fail "Error removing zsh. Exit setup..."
 }
 
 zsh_remove_config() {
-  note "Removing zsh config"
+  process_start "Removing zsh config"
 
-  warn "Setting Bash as the default Shell. This will need your password."
+  process_step "Setting Bash as the default Shell."
   sudo chsh -s /bin/bash "$(whoami)"
-  [ $? -eq 0 ] && info "Bash set as the default Shell." || fail "Error setting bash as the default shell."
+  [ $? -eq 0 ] && process_step "Bash set as the default Shell." || process_fail "Error setting bash as the default shell."
   echo ""
 
-  info "Removing starship..."
+  process_step "Removing starship"
   sh -c 'sudo rm "$(command -v 'starship')"'
-  [ $? -eq 0 ] && info "starship successfully removed." || fail "Error removing starship. Exit setup..."
-  echo ""
+  [ $? -eq 0 ] && process_step "starship successfully removed." || process_fail "Error removing starship. Exit setup..."
 
-  info "Removing .zshrc"
+  process_step "Removing .zshrc"
   sudo rm "${HOME}/.zshrc"
     
-  info "Removing .zshenv"
+  process_step "Removing .zshenv"
   sudo rm "${HOME}/.zshenv"
 
-  info "Removing .zprofile"
+  process_step "Removing .zprofile"
   sudo rm "${HOME}/.zprofile"
 
-  info "Removing .zsh config folder"
+  process_step "Removing .zsh config folder"
   sudo rm -r "${HOME}/.zsh"
-  echo ""
 
-  success "Zsh configuration succesfully removed."
+  process_ok "Zsh configuration succesfully removed."
 }
 
 zsh_diff_all() {
+  process_start "Zsh Diff"
   RESULT=0
 
   diff -r -q "${ZSH_DIR}/config/.zsh" "${HOME}/.zsh" || RESULT=1
@@ -102,8 +97,8 @@ zsh_diff_all() {
 
 
   if [ "$RESULT" -eq 1 ]; then
-    warn "ZSH: There are differences between the repository and the installed files."
+    process_warn "ZSH: There are differences between the repository and the installed files."
   else 
-    success "ZSH: All files are up to date."
+    process_ok "All files are up to date."
   fi
 }
