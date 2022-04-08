@@ -34,7 +34,7 @@ DOTFILES_INSTALL_ONLY=false
 # Flag, if only the apps config is relevant
 DOTFILES_CONFIG_ONLY=false
 # Flag, if all apps should be considered
-DOTFILES_INSTALL_ALL=true
+DOTFILES_INSTALL_ALL=false
 # The apps on which the command runs.
 DOTFILES_APPS=()
 # All positional arguments
