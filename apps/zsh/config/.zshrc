@@ -22,7 +22,7 @@ eval "$(starship init zsh)"
 
 source ~/.zsh/starship
 
-. $HOME/.asdf/asdf.sh
+. $HOME/.asdf/asdf.sh 2> /dev/null
 
 
 export PATH="$PATH:$HOME/.dotfiles/bin"
