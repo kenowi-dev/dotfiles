@@ -22,6 +22,10 @@ eval "$(starship init zsh)"
 
 source ~/.zsh/starship
 
+<<<<<<< HEAD
+=======
+. $HOME/.asdf/asdf.sh 2> /dev/null
+>>>>>>> 3bb6cb178f34290241f928cf84d62ebb377b8f09
 
 if test -f "$HOME/.asdf/asdf.sh"; then
     . $HOME/.asdf/asdf.sh
