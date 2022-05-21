@@ -1,146 +1,190 @@
-# format = "$all$directory$character"
-add_newline = false
+format = """$status\
+$username\
+$hostname\
+$shlvl\
+$kubernetes\
+$directory\
+$vcsh\
+$git_branch\
+$git_commit\
+$git_state\
+$git_status\
+$hg_branch\
+$docker_context\
+$package\
+$cmake\
+$dart\
+$deno\
+$dotnet\
+$elixir\
+$elm\
+$erlang\
+$golang\
+$helm\
+$java\
+$julia\
+$kotlin\
+$nim\
+$nodejs\
+$ocaml\
+$perl\
+$php\
+$purescript\
+$python\
+$red\
+$ruby\
+$rust\
+$scala\
+$swift\
+$terraform\
+$vagrant\
+$zig\
+$nix_shell\
+$conda\
+$memory_usage\
+$aws\
+$gcloud\
+$openstack\
+$env_var\
+$crystal\
+$custom\
+$cmd_duration\
+$line_break\
+$lua\
+$jobs\
+$battery\
+$time\
+$shell\
+$character"""
 
-[aws]
-format = '\[[$symbol($profile)(\($region\))(\[$duration\])]($style)\]'
+scan_timeout = 10
+add_newline = true
 
-[cmake]
-format = '\[[$symbol($version)]($style)\]'
+[line_break]
+disabled = false
+
+[character]
+format = '$symbol '
+success_symbol = '[❯](bold green)'
+error_symbol = '[❯](bold green)'
+vicmd_symbol = '[❮](bold green)'
+disabled = false
+
+[status]
+format = """[(\
+$symbol $int( $common_meaning) \
+(\\(\uf0e7 $signal_number( $signal_name)\\)) \
+\n)]($style) """
+symbol = "\uf467"
+not_executable_symbol = "\uf5ac"
+not_found_symbol = "\uf002"
+sigint_symbol = "\ufb8a"
+signal_symbol = "\uf0e7"
+style = 'red'
+map_symbol = true
+recognize_signal_code = true
+disabled = false
 
 [cmd_duration]
-format = '\[[⏱ $duration]($style)\]'
+min_time = 2000 # Show command duration over this time
+format = 'took [$duration]($style) '
+style = 'yellow bold'
+show_milliseconds = false
+disabled = false
+show_notifications = false
+min_time_to_notify = 45000
 
-[cobol]
-format = '\[[$symbol($version)]($style)\]'
-
-[conda]
-format = '\[[$symbol$environment]($style)\]'
-
-[crystal]
-format = '\[[$symbol($version)]($style)\]'
-
-[dart]
-format = '\[[$symbol($version)]($style)\]'
-
-[deno]
-format = '\[[$symbol($version)]($style)\]'
-
-[docker_context]
-format = '\[[$symbol$context]($style)\]'
-
-[dotnet]
-format = '\[[$symbol($version)(🎯 $tfm)]($style)\]'
-
-[elixir]
-format = '\[[$symbol($version \(OTP $otp_version\))]($style)\]'
-
-[elm]
-format = '\[[$symbol($version)]($style)\]'
-
-[erlang]
-format = '\[[$symbol($version)]($style)\]'
-
-[gcloud]
-format = '\[[$symbol$account(@$domain)(\($region\))]($style)\]'
-
-[git_branch]
-format = '\[[$symbol$branch]($style)\]'
-
-[git_status]
-format = '([\[$all_status$ahead_behind\]]($style))'
-
-[golang]
-format = '\[[$symbol($version)]($style)\]'
-
-[helm]
-format = '\[[$symbol($version)]($style)\]'
-
-[hg_branch]
-format = '\[[$symbol$branch]($style)\]'
-
-[java]
-format = '\[[$symbol($version)]($style)\]'
-
-[julia]
-format = '\[[$symbol($version)]($style)\]'
-
-[kotlin]
-format = '\[[$symbol($version)]($style)\]'
-
-[kubernetes]
-format = '\[[$symbol$context( \($namespace\))]($style)\]'
-
-[lua]
-format = '\[[$symbol($version)]($style)\]'
+[directory]
+truncation_length = 5 #
+truncate_to_repo = false #
+fish_style_pwd_dir_length = 0
+use_logical_path = true
+format = "[\uf07b $path]($style)[$read_only]($read_only_style) " #
+style = 'cyan' #
+disabled = false
+read_only = "\uf023" #
+read_only_style = 'red'
+truncation_symbol = '…/' #
+home_symbol = '~'
 
 [memory_usage]
-format = '\[$symbol[$ram( | $swap)]($style)\]'
-
-[nim]
-format = '\[[$symbol($version)]($style)\]'
-
-[nix_shell]
-format = '\[[$symbol$state( \($name\))]($style)\]'
-
-[nodejs]
-format = '\[[$symbol($version)]($style)\]'
-
-[ocaml]
-format = '\[[$symbol($version)(\($switch_indicator$switch_name\))]($style)\]'
-
-[openstack]
-format = '\[[$symbol$cloud(\($project\))]($style)\]'
+threshold = 25
+format = '$symbol[$ram_pct]($style) '
+style = 'white dimmed'
+symbol = "\ue266 "
+disabled = false
 
 [package]
-format = '\[[$symbol$version]($style)\]'
+format = '[$symbol$version]($style) '
+symbol = "\uf487 "
+style = 'yellow'
+display_private = false
+disabled = false
 
-[perl]
-format = '\[[$symbol($version)]($style)\]'
+[git_branch]
+format = 'on [$symbol$branch]($style)(:[$remote]($style)) '
+# symbol = "\ue725 "
+symbol = "\ufb2b "
+# symbol = "\uf418 "
+style = 'purple'
+truncation_length = 9223372036854775807
+truncation_symbol = '…'
+only_attached = false
+always_show_remote = false
+disabled = false
 
-[php]
-format = '\[[$symbol($version)]($style)\]'
+[git_commit]
+commit_hash_length = 7
+format = '[\($hash$tag\)]($style) '
+style = 'green'
+only_detached = true
+disabled = false
+tag_symbol = '🏷  '
+tag_disabled = true
 
-[pulumi]
-format = '\[[$symbol$stack]($style)\]'
+[git_state]
+rebase = 'REBASING'
+merge = 'MERGING'
+revert = 'REVERTING'
+cherry_pick = 'CHERRY-PICKING'
+bisect = 'BISECTING'
+am = 'AM'
+am_or_rebase = 'AM/REBASE'
+style = 'yellow'
+format = '\([$state( $progress_current/$progress_total)]($style)\) '
+disabled = false
 
-[purescript]
-format = '\[[$symbol($version)]($style)\]'
+[git_status]
+format = '([\[$all_status$ahead_behind\]]($style) )'
+style = '208'
+stashed = '\$'
+ahead = '⇡'
+behind = '⇣'
+diverged = '⇕'
+conflicted = '='
+deleted = '✘'
+renamed = '»'
+modified = '!'
+staged = '+'
+untracked = '?'
+disabled = false
 
-[python]
-format = '\[[${symbol}${pyenv_prefix}(${version})(\($virtualenv\))]($style)\]'
-
-[red]
-format = '\[[$symbol($version)]($style)\]'
-
-[ruby]
-format = '\[[$symbol($version)]($style)\]'
-
-[rust]
-format = '\[[$symbol($version)]($style)\]'
-
-[scala]
-format = '\[[$symbol($version)]($style)\]'
-
-[sudo]
-format = '\[[as $symbol]\]'
-
-[swift]
-format = '\[[$symbol($version)]($style)\]'
-
-[terraform]
-format = '\[[$symbol$workspace]($style)\]'
-
-[time]
-format = '\[[$time]($style)\]'
-
-[username]
-format = '\[[$user]($style)\]'
-
-[vagrant]
-format = '\[[$symbol($version)]($style)\]'
-
-[vlang]
-format = '\[[$symbol($version)]($style)\]'
-
-[zig]
-format = '\[[$symbol($version)]($style)\]'
+[nodejs]
+format = 'via [$symbol($version )]($style)'
+version_format = 'v${raw}'
+symbol = ' '
+style = 'bold green'
+disabled = false
+not_capable_style = 'bold red'
+detect_extensions = [
+    'js',
+    'mjs',
+    'cjs',
+    'ts',
+]
+detect_files = [
+    'package.json',
+    '.node-version',
+    '.nvmrc',
+]
+detect_folders = ['node_modules']

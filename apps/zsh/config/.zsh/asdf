@@ -1,0 +1,10 @@
+FILE="$HOME/.asdf/asdf.sh"
+if [ -f "$FILE" ]; then
+  . $HOME/.asdf/asdf.sh
+fi
+
+FILE="$HOME/.asdf/plugins/java/set-java-home.zsh"
+if [ -f "$FILE" ]; then
+  . ~/.asdf/plugins/java/set-java-home.zsh
+fi
+
