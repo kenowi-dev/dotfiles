@@ -81,13 +81,6 @@ function fail() {
   echo ""
   exit 1
 }
-function task_start() {
-  printf "${RED}$1 Aborting...${RESET}\n"
-  echo ""
-  echo "Use 'dotfiles --help' or 'dotfiles <command> --help' for Usage."
-  echo ""
-  exit 1
-}
 
 ###########################
 ######### USAGES ##########

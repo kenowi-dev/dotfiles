@@ -40,8 +40,9 @@ setopt      multios
 setopt      pushd_ignore_dups   # Don't push the same dir twice 
 
 
-export LANG="en_US.UTF-8"
-export LC_ALL="en_US.UTF-8"
+export LANGUAGE=en_US.UTF-8
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
 if [[ $SSH_CONNECTION ]]; then
