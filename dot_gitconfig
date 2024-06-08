@@ -1,0 +1,9 @@
+[user]
+        name = Till Wittenburg
+        email = 
+[init]
+        defaultBranch = main
+[core]
+        autocrlf = false
+[url "git@github.com:"]
+        insteadOf = https://github.com/

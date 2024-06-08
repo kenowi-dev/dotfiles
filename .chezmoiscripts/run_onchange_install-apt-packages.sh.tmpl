@@ -1,0 +1,6 @@
+#!/bin/bash
+
+{{ range .packages.apt -}}
+echo "Installing" {{ . | quote }}
+sudo apt install {{ . | quote }} --yes
+{{ end -}}

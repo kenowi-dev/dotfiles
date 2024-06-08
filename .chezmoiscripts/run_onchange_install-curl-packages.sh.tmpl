@@ -1,0 +1,6 @@
+#!/bin/bash
+
+{{ range .packages.curl -}}
+echo "Installing" {{ . | quote }}
+curl -s {{ . | quote }}| sudo bash -s
+{{ end -}}

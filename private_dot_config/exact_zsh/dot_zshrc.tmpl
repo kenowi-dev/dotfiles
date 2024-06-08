@@ -1,0 +1,96 @@
+#!/usr/bin/env zsh
+
+
+##############################################################################
+# ZSH History
+##############################################################################
+HISTSIZE=10000                  #How many lines of history to keep in memory
+HISTFILE=~/.zsh/.zsh_history    #Where to save history to disk
+SAVEHIST=10000                  #Number of history entries to save to disk
+HISTDUP=erase                   #Erase duplicates in the history file
+
+setopt      appendhistory       #Append history to the history file (no overwriting)
+setopt      extendedhistory     #Save each command's beginning timestamp and the duration to the history file
+setopt      sharehistory        #Share history across terminals
+setopt      incappendhistory    #Immediately append to the history file, not just when a term is killed
+setopt      histignorealldups   #Remove duplicates from history
+setopt      histreduceblanks    #Remove superflous blanks from history
+
+
+setopt      prompt_subst        # allow expansion in prompts
+setopt      nonomatch           # try to avoid the 'zsh: no matches found...'
+setopt      hash_list_all       # whenever a command completion is attempted, make sure the entire command path is hashed first.
+setopt      completeinword      # not just at the end
+setopt      noshwordsplit       # use zsh style word splitting
+setopt      auto_menu           # show completion menu on successive tab press
+unsetopt    menu_complete       # Do not autoselect the first completion entry
+setopt      always_to_end       # Insert autocompletion if the cursur is in the word.
+setopt      completealiases     # Completes aliases.
+
+setopt      noflowcontrol       # no c-s/c-q output freezing
+setopt      longlistjobs        # display PID when suspending processes as well
+setopt      notify              # report the status of backgrounds jobs immediately
+setopt      interactivecomments # allow use of comments in interactive code
+
+setopt      csh_null_glob
+setopt      hist_verify
+setopt      auto_cd
+setopt      multios
+
+#setopt      nobeep              # No "Beep"ing
+setopt      pushd_ignore_dups   # Don't push the same dir twice 
+
+##############################################################################
+# Prompt Theme
+##############################################################################
+eval "$(oh-my-posh init zsh --config $XDG_CONFIG_HOME/oh-my-posh/theme.json)"
+
+##############################################################################
+# ZSH Aliases and Functions
+##############################################################################
+alias la='ls -lAh'
+alias ll='ls -lah'
+alias l='k -h'
+
+function precmd() {
+  # Set the window tile.
+  # Especially usefull for WSL.
+  window_title="\\033]0;${PWD##*/}\\007"
+  echo -ne "$window_title"
+}
+
+# Autocomplete Reset
+function reset-autocomplete() {
+  rm -rf "$XDG_CACHE_HOME"/zsh/comp*
+  compinit
+}
+
+
+##############################################################################
+# ZSH Plugins
+##############################################################################
+# zsh-snap
+zstyle ':znap:*' repos-dir "$XDG_DATA_HOME/zsh/plugins"
+source "$XDG_DATA_HOME/zsh-snap/znap.zsh"
+
+# Autocompletion
+zstyle ':autocomplete:*' insert-unambiguous yes
+# TODO fix autocomplete
+# znap source marlonrichert/zsh-autocomplete
+znap source zsh-users/zsh-autosuggestions
+znap install zsh-users/zsh-completions
+
+# Quality of Life
+znap source agkozak/zsh-z
+znap source hcgraf/zsh-sudo 
+znap source ael-code/zsh-colored-man-pages
+
+# LSCOLORS is used as a fallback for LS_COLORS
+export CLICOLOR=1 LSCOLORS="Gxfxcxdxbxegedabagacad"
+znap source trapd00r/LS_COLORS
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+
+
+# Should be at the end of this file
+znap source zsh-users/zsh-syntax-highlighting
+

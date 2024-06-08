@@ -1,0 +1,7 @@
+packages:
+  apt:
+    - git
+    - zsh
+    - unzip
+  curl:
+    - https://ohmyposh.dev/install.sh
