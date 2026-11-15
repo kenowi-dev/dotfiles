@@ -1,0 +1,97 @@
+#!/usr/bin/env zsh
+
+##############################################################################
+# ZSH History and Environment Settings
+##############################################################################
+test ! -f "$ZDOTDIR/history.zsh" || source "$ZDOTDIR/history.zsh"
+test ! -f "$ZDOTDIR/.zshrc-env" || source "$ZDOTDIR/.zshrc-env"
+
+##############################################################################
+# Plugin Manager
+##############################################################################
+zstyle ':znap:*' repos-dir "$XDG_DATA_HOME/zsh/plugins"
+source "$XDG_DATA_HOME/zsh-snap/znap.zsh"
+
+{{- if eq .chezmoi.os "darwin" }}
+# {{/* Terminal-Shell integration is handled by the Oh-My-Posh prompt natively */}}
+# iTerm Integration
+znap eval iterm2 'curl -fsSL https://iterm2.com/shell_integration/zsh'
+{{- end }}
+
+export STARSHIP_CONFIG=$XDG_CONFIG_HOME/starship.toml
+eval "$(starship init zsh)"
+
+##############################################################################
+# ZSH Aliases and Functions
+##############################################################################
+test ! -f "$XDG_CONFIG_HOME/.aliases" || source "$XDG_CONFIG_HOME/.aliases"
+
+# Named Directories
+hash -d dev=~/Developer
+hash -d dotfiles=$XDG_DATA_HOME/chezmoi
+
+# Interactive Command Editing
+function edit() {
+  ${(@z)${VISUAL:-${EDITOR:-vi}}} "$@"
+}
+
+##############################################################################
+# ZSH Plugins
+##############################################################################
+# Autocompletion
+znap clone marlonrichert/zasync # required by zsh-autocomplete
+fpath=( "$XDG_DATA_HOME/zsh/plugins/marlonrichert/zasync" $fpath )
+znap source marlonrichert/zsh-autocomplete
+zstyle ':autocomplete:*' add-semicolon no
+zstyle ':autocomplete:*complete*:*' insert-unambiguous yes
+zstyle ':completion:*:*' matcher-list 'm:{[:lower:]-}={[:upper:]_}' '+r:|[.]=**'
+
+# Auto Suggestions
+ZSH_AUTOSUGGEST_STRATEGY=(history)
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+ZSH_AUTOSUGGEST_MANUAL_REBIND=true
+ZSH_AUTOSUGGEST_HISTORY_IGNORE="(cd *|?(#c250,))"
+znap source zsh-users/zsh-autosuggestions
+# Completion Database
+znap source zsh-users/zsh-completions
+
+# Quality of Life
+znap source agkozak/zsh-z
+{{- if eq .chezmoi.os "darwin" }}
+znap source ohmyzsh/ohmyzsh plugins/macos
+{{- end }}
+znap source ohmyzsh/ohmyzsh lib/clipboard.zsh
+znap source ael-code/zsh-colored-man-pages
+
+# direnv
+znap eval direnv 'direnv hook zsh'
+
+# File Listing Colors
+export CLICOLOR=1 LSCOLORS="Gxfxcxdxbxegedabagacad"
+znap source trapd00r/LS_COLORS
+
+# Do NOT feed the full LS_COLORS database to list-colors: complist re-matches
+# it against every entry on every menu redraw (~670 patterns ≈ 250 ms CPU per
+# selection move for entries that match nothing, e.g. git subcommands).
+# Keep LS_COLORS intact for `ls`, but let completion use only the file-type
+# codes (di/ln/ex/...), dropping all per-extension patterns (*.tar, *.md, ...).
+zstyle ':completion:*' list-colors ${${(s.:.)LS_COLORS}:#\*.[^=]*}
+# Exception: restore the full database for `ls` completion only. _ls completes
+# files via _arguments, which places file matches in the `argument-rest` group,
+# so scope the full database to that tag *and* the ls command. complist matches
+# *.ext against file names with a cheap suffix compare, so `ls` menus stay fast
+# while non-file menus (git, ...) keep the lean list above.
+zstyle ':completion:*:(ls|gls):*:argument-rest' list-colors "${(s.:.)LS_COLORS}"
+
+# This should be loaded last
+ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets)
+znap source zsh-users/zsh-syntax-highlighting
+# But this should be even after syntax highlighting
+znap source zsh-users/zsh-history-substring-search
+
+##############################################################################
+# Customizations
+##############################################################################
+
+# Command Line Editor
+test ! -f "$ZDOTDIR/.zshrc-zle" || source "$ZDOTDIR/.zshrc-zle"

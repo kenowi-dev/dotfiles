@@ -1,0 +1,9 @@
+{{- if eq .chezmoi.os "darwin" -}}
+
+#!/usr/bin/env sh
+set -eufo pipefail
+
+brew bundle --file=- <<-EOF
+{{ includeTemplate "private_dot_config/exact_homebrew/Brewfile.tmpl" . }}
+EOF
+{{ end -}}

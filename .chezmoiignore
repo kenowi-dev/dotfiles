@@ -1,0 +1,21 @@
+# Various Repo Files
+LICENSE
+README.md
+
+# Compiled version of Powerlevel10k theme
+.config/zsh/.zshrc.zwc
+.config/zsh/.zshrc-env.zwc
+.config/zsh/.zshrc-zle.zwc
+
+# iTerm Sockets
+.config/iterm2/sockets
+
+# Homebrew Trust Lockfile
+.config/homebrew/trust.json.lock
+
+{{ if .work }}
+# Personal Configuration
+.config/1Password
+.config/ngrok
+.config/kanidm
+{{ end }}

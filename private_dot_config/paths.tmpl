@@ -1,0 +1,8 @@
+{{ default "/opt/homebrew" (env "HOMEBREW_PREFIX") }}/bin
+{{ default "/opt/homebrew" (env "HOMEBREW_PREFIX") }}/sbin
+{{ default (print (env "GOPATH") "/bin") (env "GOBIN") }}
+{{ .chezmoi.homeDir }}/Library/Application Support/JetBrains/Toolbox/scripts
+
+{{ .chezmoi.homeDir }}/.local/bin
+{{ .chezmoi.homeDir }}/.cargo/bin
+
