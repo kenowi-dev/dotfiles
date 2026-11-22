@@ -1,0 +1,23 @@
+{{- /* Template the global tool permissions in the format
+       `mcp:<mcp-name>:<tool-name>`: { "default": "<permission>" }` */ -}}
+{{- $files := printf "%s/%s" .chezmoi.sourceDir "private_dot_config/zed/.mcp/*.toml" | glob }}
+{{- $blocks := list }}
+{{- range $file := $files }}
+    {{- $mcps := fromToml (includeTemplate $file $) -}}
+    {{- range $name, $mcp := $mcps }}
+        {{- if hasKey $mcp "tools" }}
+            {{- $entries := list }}
+            {{- range $tool, $enabled := $mcp.tools }}
+                {{- if kindIs "string" $enabled }}
+                    {{- $perm := $enabled }}
+                    {{- if eq $enabled "allow-when-enabled" }}{{ $perm = "allow" }}{{ end }}
+                    {{- $entries = append $entries (printf "        \"mcp:%s:%s\": { \"default\": \"%s\" }" $name $tool $perm) }}
+                {{- end }}
+            {{- end }}
+            {{- if $entries }}
+                {{- $blocks = append $blocks (printf "\n        // %s Tools\n%s" $name (join ",\n" $entries)) }}
+            {{- end }}
+        {{- end }}
+    {{- end }}
+{{- end }}
+{{- join "\n" $blocks -}}

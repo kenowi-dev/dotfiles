@@ -10,3 +10,52 @@ signingKeyRef = "op://Private/GitHub Signing Key/public key"
 [onepassword]
 # Account shorthand passed to the `op` CLI and the 1Password SSH agent config.
 account = "my.1password.eu"
+
+# Sandbox policy for Zed's agent terminal tool.
+[agent.sandbox]
+networkHosts = [
+	# GitHub content
+	"ghcr.io",
+	"docs.github.com",
+	"raw.githubusercontent.com",
+	"objects.githubusercontent.com",
+	"release-assets.githubusercontent.com",
+	"pkg-containers.githubusercontent.com",
+
+	# Documentation
+	"pkg.go.dev",
+	"docs.renovatebot.com",
+
+	# Package registries
+	"crates.io",
+	"static.crates.io",
+	"index.crates.io",
+	"registry.npmjs.org",
+	"proxy.golang.org",
+	"sum.golang.org",
+	"pypi.org",
+	"files.pythonhosted.org",
+	"*.nuget.org",
+]
+
+writePaths = [
+	# Helm
+	".config/helm/",
+	"Library/Caches/helm/",
+	# uv
+	"Library/Caches/uv/",
+	# Terraform
+	"Library/Caches/terraform/",
+	# Go
+	"Library/Caches/go/",
+	"Library/Caches/go-build/",
+	".local/share/go/pkg/",
+	"Library/Caches/golangci-lint/",
+	# Cargo
+	".cargo/registry/",
+	".cargo/git/",
+	# npm
+	".npm/",
+	# pre-commit
+	"Library/Caches/pre-commit/",
+]

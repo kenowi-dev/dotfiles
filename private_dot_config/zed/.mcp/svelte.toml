@@ -1,0 +1,9 @@
+[Svelte.config]
+enabled = true
+url = "https://mcp.svelte.dev/mcp"
+timeout = 10
+
+[Svelte.tools]
+svelte-autofixer = "allow"
+get-documentation = "allow"
+list-sections = "allow"

@@ -1,0 +1,327 @@
+// Zed settings — managed by chezmoi.
+// Source: ~/.local/share/chezmoi/private_dot_config/zed/settings.json.tmpl
+//
+// Based on codello's dotfiles (https://github.com/codello/dotfiles), adapted
+// for this machine: DeepSeek models, no work/personal conditionals.
+//
+// To see all of Zed's default settings, run `zed: open default settings`.
+{
+  // Feature Flags
+  "feature_flags": {
+    "sandboxing": "on",
+    "create-thread-tool": "on"
+  },
+
+  // Extensions
+  "auto_install_extensions": {
+    "dockerfile": true,
+    "git-firefly": true,
+    "gotmpl": true,
+    "html": true,
+    "intellij-newui-theme": true,
+    "material-icon-theme": true,
+    "svelte": true,
+    "toml": true
+  },
+
+  // General
+  "base_keymap": "JetBrains",
+  "cli_default_open_behavior": "new_window",
+
+  // Appearance & Layout
+  "theme": {
+    "mode": "system",
+    "light": "One Light",
+    "dark": "JetBrains New Dark"
+  },
+  "icon_theme": {
+    "mode": "system",
+    "light": "Material Icon Theme",
+    "dark": "Material Icon Theme"
+  },
+  "ui_font_size": 16,
+  "buffer_font_family": "JetBrains Mono",
+  "buffer_font_features": {
+    "calt": true,
+    "liga": true
+  },
+  "buffer_font_size": 14,
+  "agent_ui_font_family": ".ZedSans",
+  "agent_ui_font_size": 16.0,
+  "drop_target_size": 0.35,
+  "title_bar": {
+    "show_branch_status_icon": true,
+    "show_menus": false
+  },
+  "tab_bar": {
+    "show_nav_history_buttons": false,
+    "show_tab_bar_buttons": false
+  },
+  "tabs": {
+    "close_position": "left",
+    "file_icons": true,
+    "git_status": true,
+    "show_diagnostics": "all"
+  },
+  "toolbar": {
+    "breadcrumbs": false,
+    "quick_actions": false
+  },
+  "outline_panel": {
+    "dock": "left"
+  },
+  "collaboration_panel": {
+    "dock": "right"
+  },
+  "status_bar": {
+    "line_endings_button": true
+  },
+  "project_panel": {
+    "dock": "left",
+    "hide_root": true,
+    "diagnostic_badges": true,
+    "bold_folder_labels": true
+  },
+  "git_panel": {
+    "dock": "left",
+    "sort_by": "path",
+    "group_by": "staging"
+  },
+
+  // Editor
+  "autosave": {
+    "after_delay": {
+      "milliseconds": 1000
+    }
+  },
+  "format_on_save": "on",
+  "auto_indent": "syntax_aware",
+  "auto_indent_on_paste": true,
+  "close_on_file_delete": true,
+  "show_completion_documentation": true,
+  "hard_tabs": true,
+  "tab_size": 4,
+  "preferred_line_length": 120,
+  "soft_wrap": "none",
+  "auto_signature_help": false,
+  "show_signature_help_after_edits": true,
+  "gutter": {
+    "min_line_number_digits": 3
+  },
+  "active_pane_modifiers": {
+    "inactive_opacity": 0.75
+  },
+  "colorize_brackets": true,
+  "wrap_guides": [80, 120],
+  "indent_guides": {
+    "coloring": "indent_aware"
+  },
+  "sticky_scroll": {
+    "enabled": true
+  },
+  "scrollbar": {
+    "show": "system"
+  },
+  "unnecessary_code_fade": 0.4,
+  "semantic_tokens": "combined",
+  "inlay_hints": {
+    "enabled": true,
+    "edit_debounce_ms": 0,
+    "show_type_hints": true,
+    "show_parameter_hints": false,
+    "show_background": false,
+    "toggle_on_modifiers_press": {
+      "alt": true
+    }
+  },
+  "diagnostics": {
+    "inline": {
+      "enabled": true,
+      "padding": 8
+    }
+  },
+
+  // Git
+  "diff_view_style": "unified",
+  "git": {
+    "branch_picker": {
+      "show_author_name": true
+    }
+  },
+
+  // Terminal
+  "terminal": {
+    "font_weight": 400,
+    "font_family": "JetBrainsMono Nerd Font",
+    "cursor_shape": "bar"
+  },
+
+  // Telemetry
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false
+  },
+
+  // File Types
+  "file_types": {
+    "GitHub Actions": ["**/.github/workflows/*"],
+    "Go Text Template": ["*.tpl", "**/templates/*.yaml"],
+    "Helm": [
+      "**/templates/**/*.tpl",
+      "**/templates/**/*.yaml",
+      "**/templates/**/*.yml",
+      "**/helmfile.d/**/*.yaml",
+      "**/helmfile.d/**/*.yml",
+      "**/values*.yaml"
+    ]
+  },
+  "file_scan_exclusions": ["...", "**/._*"],
+
+  // Language-specific settings
+  // Formatting uses Zed's Prettier integration (`formatter: "auto"`); Biome is
+  // intentionally not configured globally. Add it in a project's
+  // `.zed/settings.json` if that project needs it.
+  "languages": {
+    "JavaScript": {
+      "preferred_line_length": 120,
+      "prettier": {
+        "singleQuote": false
+      }
+    },
+    "TypeScript": {
+      "language_servers": ["tsgo", "vtsls"]
+    },
+    "Go Text Template": {
+      "tab_size": 2
+    },
+    "YAML": {
+      "hard_tabs": false,
+      "tab_size": 2
+    }
+  },
+
+  // LSP settings
+  "lsp": {
+    "vscode-html-language-server": {
+      "settings": {
+        "html": {
+          "format": {
+            "indentInnerHtml": true,
+            "contentUnformatted": "svg,script",
+            "extraLiners": "div,p"
+          }
+        }
+      }
+    },
+    "tailwindcss-language-server": {
+      "settings": {
+        "experimental": {
+          "classRegex": ["class=\"([^\"]*)\""]
+        }
+      }
+    }
+  },
+
+  // AI
+  "agent": {
+    "dock": "right",
+    "threads_sidebar": {
+      "position": "right"
+    },
+    "show_turn_stats": true,
+    "thinking_display": "auto",
+    "play_sound_when_agent_done": "when_hidden",
+    "single_file_review": true,
+    "enable_feedback": false,
+    "commit_message_include_project_rules": true,
+    "favorite_models": [
+      {
+        "provider": "openrouter",
+        "model": "deepseek/deepseek-v4.1-flash-1017",
+        "enable_thinking": true,
+        "effort": "high"
+      }
+    ],
+    "default_model": {
+      "provider": "openrouter",
+      "model": "deepseek/deepseek-v4.1-flash-1017",
+      "enable_thinking": true,
+      "effort": "high"
+    },
+    "subagent_model": {
+      "provider": "openrouter",
+      "model": "deepseek/deepseek-v4.1-flash-1017",
+      "enable_thinking": true,
+      "effort": "high"
+    },
+    "inline_assistant_model": {
+      "provider": "openrouter",
+      "model": "deepseek/deepseek-v4.1-flash-1017",
+      "enable_thinking": true,
+      "effort": "low"
+    },
+    "compaction_model": {
+      "provider": "openrouter",
+      "model": "deepseek/deepseek-v4.1-flash-1017"
+    },
+    "commit_message_model": {
+      "provider": "openrouter",
+      "model": "deepseek/deepseek-v4.1-flash-1017"
+    },
+    "thread_summary_model": {
+      "provider": "openrouter",
+      "model": "deepseek/deepseek-v4.1-flash-1017"
+    },
+    "default_profile": "write",
+    "tool_permissions": {
+      "tools": {
+        // Integrated tools
+        "fetch": { "default": "allow" },
+        "create_directory": { "default": "allow" },
+        "copy_path": { "default": "allow" },
+        "delete_path": { "default": "allow" },
+        "move_path": { "default": "allow" },
+        "edit_file": { "default": "allow" },
+        "write_file": { "default": "allow" },
+        "terminal": {
+          "default": "allow",
+          "always_confirm": [
+            // Exfiltration guards. The sandbox network allowlist is the
+            // primary boundary; these are additional per-command guards.
+            { "pattern": "^cargo publish" },
+            { "pattern": "^npm publish" },
+            { "pattern": "^twine upload" },
+            { "pattern": "^helm push" },
+            // Generic HTTP clients can reach every allowlisted host
+            { "pattern": "^(curl|wget|https?)\\b" },
+            // Keychain access and macOS automation
+            { "pattern": "^(security|osascript)\\b" },
+            // Wrappers bypass per-command pattern matching
+            { "pattern": "^(ba|z|da|k)?sh\\s+-[a-zA-Z]*c\\b" }
+          ],
+          "always_deny": [
+            // Never run find against the home directory
+            { "pattern": "^find ({{ .chezmoi.homeDir }}|~)/?\\s" }
+          ]
+        },
+        {{- includeTemplate "private_dot_config/zed/.mcp/tool-permissions.tmpl" . }}
+      }
+    },
+    "sandbox_permissions": {
+      "allow_all_hosts": false,
+      "network_hosts": [
+{{- range $i, $host := .agent.sandbox.networkHosts }}{{ if $i }},{{ end }}
+        {{ $host | toJson }}{{ end }}
+      ],
+      "write_paths": [
+{{- range $i, $path := .agent.sandbox.writePaths }}{{ if $i }},{{ end }}
+        {{ printf "%s/%s" $.chezmoi.homeDir $path | toJson }}{{ end }}
+      ]
+    }
+  },
+  "context_servers": {
+    {{- includeTemplate "private_dot_config/zed/.mcp/context-servers.tmpl" . }}
+  },
+
+  "$schema": "zed://schemas/settings"
+}
