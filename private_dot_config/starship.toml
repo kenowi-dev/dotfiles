@@ -1,6 +1,8 @@
 # Get editor completions based on the config schema
 "$schema" = 'https://starship.rs/config-schema.json'
 
+palette = 'default'
+
 format = """$status\
 $username\
 $hostname\
@@ -159,7 +161,7 @@ disabled = false
 
 [git_status]
 format = '([\[$all_status$ahead_behind\]]($style) )'
-style = '208'
+style = 'orange'
 stashed = '\$'
 ahead = '⇡'
 behind = '⇣'
@@ -219,3 +221,13 @@ detect_extensions = [
 ]
 detect_files = ['package.json', '.node-version', '.nvmrc']
 detect_folders = ['node_modules']
+
+[palettes.default]
+cyan = '#89dceb'
+purple = '#cba6f7'
+orange = '#fab387'
+green = '#a6e3a1'
+red = '#f38ba8'
+yellow = '#f9e2af'
+blue = '#89b4fa'
+white = '#cdd6f4'
