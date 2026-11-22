@@ -53,19 +53,14 @@ function _zle_menu-accept-and-key() {
 }
 zle -N _zle_menu-accept-and-key
 
-# Wrapped to restore default menuselect Left/Right before opening a completion menu
-function _zle_menu-complete-restore() {
+# Wrapped to restore default menuselect Left/Right before opening a completion menu.
+# `menu-select` opens the menu instead of inserting the first match right away:
+# Tab/Shift-Tab then cycle the selection and Enter accepts it.
+function _zle_menu-select-restore() {
   .zshrc:restore-menu-bindings
-  zle menu-complete
+  zle menu-select
 }
-zle -N _zle_menu-complete-restore
-
-# Wrapped to restore default menuselect Left/Right before opening a completion menu
-function _zle_reverse-menu-complete-restore() {
-  .zshrc:restore-menu-bindings
-  zle reverse-menu-complete
-}
-zle -N _zle_reverse-menu-complete-restore
+zle -N _zle_menu-select-restore
 
 # Catch-all: restore defaults before each new prompt (handles Esc, Ctrl-C,
 # Enter, and any other menu exit path we don't explicitly wrap).
@@ -121,10 +116,10 @@ bindkey            '^x^e' edit-command-line
 bindkey              '^H' backward-kill-line
 # ⌘Del→: Delete to end of line (mapped by iTerm)
 bindkey         '^[[3;5~' kill-line
- # Tab: Cycle through completions
-bindkey              '^I' _zle_menu-complete-restore
- # Shift-Tab: Cycle through completions
-bindkey "$terminfo[kcbt]" _zle_reverse-menu-complete-restore
+# Tab: Open completion menu, then cycle through the matches
+bindkey              '^I' _zle_menu-select-restore
+# Shift-Tab: Open completion menu (Shift-Tab then cycles backwards inside it)
+bindkey "$terminfo[kcbt]" _zle_menu-select-restore
 # Up-Arrow: Search History or Default
 bindkey            '^[[A' up-line-or-search-or-history
 # Down-Arrow: Search History or Default
