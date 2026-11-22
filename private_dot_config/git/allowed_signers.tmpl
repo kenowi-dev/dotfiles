@@ -1,0 +1,3 @@
+# Managed by chezmoi. Identities allowed to verify Git SSH signatures.
+# Format: <principal> <public key>
+{{ if lookPath "op" }}{{ .git.email }} {{ onepasswordRead .git.signingKeyRef .onepassword.account | trim }}{{ end }}

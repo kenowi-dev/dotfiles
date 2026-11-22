@@ -1,0 +1,18 @@
+# Managed by chezmoi. Edit the source file, not this one:
+# ~/.local/share/chezmoi/private_dot_ssh/config.tmpl
+
+# OrbStack's 'orb' SSH host for Linux machines. This must be included before
+# any Host blocks.
+Include ~/.orbstack/ssh/config
+{{- if eq .chezmoi.os "darwin" }}
+
+# Use the 1Password SSH agent for all hosts, so every SSH client (git, ssh,
+# editors, etc.) gets keys from 1Password without per-tool configuration.
+Host *
+	UseKeychain         yes
+	AddKeysToAgent      yes
+	ForwardX11          no
+	ForwardAgent        no
+	ServerAliveInterval 240
+	IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+{{- end }}

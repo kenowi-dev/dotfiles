@@ -1,0 +1,11 @@
+# Managed by chezmoi. Edit the source file, not this one:
+# ~/.local/share/chezmoi/private_dot_config/1Password/ssh/agent.toml.tmpl
+
+# Controls which keys the 1Password SSH agent offers to SSH clients.
+# Each [[ssh-keys]] entry matches on account, vault, item, or a combination.
+# This entry offers all SSH keys from the Private vault of this account.
+# The vault ID (instead of the name) stays valid if the vault is renamed and
+# keeps the vault name out of this unencrypted file.
+[[ssh-keys]]
+account = {{ .onepassword.account | quote }}
+vault   = "cdd7brvxtf7wl5n3pg5qamdaqi" # Private

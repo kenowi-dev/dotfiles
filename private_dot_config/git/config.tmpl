@@ -1,0 +1,66 @@
+# Managed by chezmoi. Edit the source file, not this one:
+# ~/.local/share/chezmoi/private_dot_config/git/config.tmpl
+{{- $signingKey := "" }}
+{{- if eq .chezmoi.os "darwin" }}
+{{- if lookPath "op" }}
+{{- $signingKey = onepasswordRead .git.signingKeyRef .onepassword.account | trim }}
+{{- else }}
+{{- warnf "1Password CLI (op) not found: Git commit signing is disabled until 1Password is installed and chezmoi is re-applied." }}
+{{- end }}
+{{- end }}
+
+[user]
+	# Commit identity, templated from .chezmoidata.toml.
+	name = {{ .git.name | quote }}
+	email = {{ .git.email | quote }}
+{{- with $signingKey }}
+	# Public key of the SSH key stored in 1Password, read at apply time so a
+	# rotated key only needs `chezmoi apply`.
+	# Source: {{ $.git.signingKeyRef }}
+	signingKey = {{ . | quote }}
+{{- end }}
+
+{{ if eq .chezmoi.os "darwin" -}}
+[gpg]
+	# Sign with an SSH key instead of a GPG key.
+	format = ssh
+
+[gpg "ssh"]
+	# 1Password's signing helper, which uses the key stored in 1Password.
+	program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+{{- with $signingKey }}
+	# Identities allowed to verify signatures, e.g. `git log --show-signature`.
+	allowedSignersFile = {{ printf "%s/.config/git/allowed_signers" $.chezmoi.homeDir | quote }}
+{{- end }}
+
+[core]
+	# Global ignore file for OS and editor cruft.
+	excludesFile = {{ printf "%s/.config/git/ignore" $.chezmoi.homeDir | quote }}
+	# Normalize filenames to the composed Unicode form on macOS, so the same
+	# name is not seen as two different paths.
+	precomposeunicode = true
+{{- with $signingKey }}
+
+[commit]
+	# Sign every commit.
+	gpgsign = true
+
+[tag]
+	# Sign every annotated tag.
+	gpgsign = true
+{{- end }}
+{{- end }}
+
+[init]
+	# Default branch name for newly created repositories.
+	defaultBranch = main
+
+[diff]
+	# More stable, human-readable diffs than the default Myers algorithm.
+	algorithm = histogram
+	# Use i/ and w/ prefixes to show whether a path is in the index or worktree.
+	mnemonicPrefix = true
+
+[rerere]
+	# Record conflict resolutions and reuse them when the same conflict recurs.
+	enabled = true

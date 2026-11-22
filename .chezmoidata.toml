@@ -1,0 +1,12 @@
+[git]
+name = "Till Wittenburg"
+email = "wittenburg.till+git@gmail.com"
+
+# 1Password reference (vault/item/field) to the public half of the SSH signing
+# key. Read at apply time, so rotating the key only needs `chezmoi apply`.
+# If the key lives in another vault, change "Private" below.
+signingKeyRef = "op://Private/GitHub Signing Key/public key"
+
+[onepassword]
+# Account shorthand passed to the `op` CLI and the 1Password SSH agent config.
+account = "my.1password.eu"
