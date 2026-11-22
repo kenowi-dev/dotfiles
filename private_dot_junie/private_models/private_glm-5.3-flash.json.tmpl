@@ -1,0 +1,14 @@
+{{- $apiKey := "" }}
+{{- if lookPath "op" }}
+{{- $apiKey = onepasswordRead "op://Private/OpenRouter Key/credential" .onepassword.account | trim }}
+{{- else }}
+{{- warnf "1Password CLI (op) not found: the OpenRouter API key for Junie is empty. Re-run chezmoi apply after installing 1Password." }}
+{{- end }}
+{
+  "id": "z-ai/glm-5.3-flash",
+  "displayName": "GLM 5.3 Flash",
+  "providerName": "OpenRouter",
+  "baseUrl": "https://openrouter.ai/api/v1/chat/completions",
+  "apiType": "OpenAICompletion",
+  "apiKey": {{ $apiKey | toJson }}
+}
