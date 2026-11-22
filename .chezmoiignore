@@ -12,10 +12,3 @@ README.md
 
 # Homebrew Trust Lockfile
 .config/homebrew/trust.json.lock
-
-{{ if .work }}
-# Personal Configuration
-.config/1Password
-.config/ngrok
-.config/kanidm
-{{ end }}
