@@ -90,4 +90,8 @@ Identity and 1Password references live in `.chezmoidata.toml`:
   warning and applied on a later run.
 - The 1Password SSH agent only offers keys from the vault configured in
   `~/.config/1Password/ssh/agent.toml` (currently the `Private` vault).
+- `~/.config/git` and `~/.config/1Password` are managed with `exact_`: any
+  file in those directories that chezmoi does not manage is deleted on
+  `chezmoi apply`. Add machine-local Git config to the repo (or keep it
+  outside these directories) rather than dropping it into `~/.config/git`.
 - The dotfiles configuration does **not** install Homebrew itself.
